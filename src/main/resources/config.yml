@@ -1,0 +1,18 @@
+prefix: '&8[&cTwitch&8]'
+now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8]'
+not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore'
+reload: '%prefix% &8» &7Reloaded config'
+reload_time: 60
+
+# You can get your client_id and client_secret here: https://dev.twitch.tv/console/apps (Create an app)
+client_id: ''
+client_secret: ''
+
+# The list of channels you want to check
+channels:
+  - 'channel1'
+
+# Messages
+reload_config: '%prefix% &8» &7Reloaded config'
+parameters_error: '%prefix% &8» &7Error while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message%'
+refresh_stream_error: '%prefix% &8» &7Error while refreshing the stream, maybe you are in timeout by twitch, try increasing the reload time - %message%'

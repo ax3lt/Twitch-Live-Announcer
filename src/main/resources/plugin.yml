@@ -1,0 +1,14 @@
+name: StreamNotifier
+version: '${project.version}'
+main: it.ax3lt.main.StreamAnnouncer
+api-version: 1.19
+author: ax3lt
+description: A simple plugin to notify when a streamer goes live
+commands:
+  stream:
+    description: Stream command
+    usage: /stream <reload>
+    permission: streamaanouncer.reload
+    permission-message: You don't have permission to use this command
+    default: op
+    tabcomplete: [reload]
