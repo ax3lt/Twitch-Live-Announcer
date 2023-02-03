@@ -1,7 +1,8 @@
-package it.ax3lt.main;
+package it.ax3lt.Main;
 
-import it.ax3lt.handlers.AnnouncerHandler;
-import it.ax3lt.handlers.CommandHandler;
+import it.ax3lt.Handlers.AnnouncerHandler;
+import it.ax3lt.Handlers.CommandHandler;
+import it.ax3lt.Utils.ConfigUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -20,10 +21,11 @@ public final class StreamAnnouncer extends JavaPlugin {
             AnnouncerHandler.configureParameters();
         } catch (IOException e) {
 
-            getServer().getConsoleSender().sendMessage(Objects.requireNonNull(getConfig().getString("parameters_error"))
-                    .replace("%prefix", Objects.requireNonNull(getConfig().getString("prefix")))
+            getServer().getConsoleSender().sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString(("parameters_error")))
+                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                     .replace("%message%", e.getMessage())
             );
+
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -33,8 +35,8 @@ public final class StreamAnnouncer extends JavaPlugin {
                 try {
                     AnnouncerHandler.refresh();
                 } catch (IOException e) {
-                    getServer().getConsoleSender().sendMessage(Objects.requireNonNull(getConfig().getString("refresh_stream_error"))
-                            .replace("%prefix", Objects.requireNonNull(getConfig().getString("prefix")))
+                    getServer().getConsoleSender().sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("refresh_stream_error"))
+                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                             .replace("%message%", e.getMessage())
                     );
                 }

@@ -1,6 +1,6 @@
-name: StreamNotifier
+name: StreamAnnouncer
 version: '${project.version}'
-main: it.ax3lt.main.StreamAnnouncer
+main: it.ax3lt.Main.StreamAnnouncer
 api-version: 1.19
 author: ax3lt
 description: A simple plugin to notify when a streamer goes live

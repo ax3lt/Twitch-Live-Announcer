@@ -1,6 +1,6 @@
-package it.ax3lt.handlers;
+package it.ax3lt.Handlers;
 
-import it.ax3lt.main.StreamAnnouncer;
+import it.ax3lt.Main.StreamAnnouncer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

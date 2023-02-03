@@ -1,9 +1,9 @@
-package it.ax3lt.handlers;
+package it.ax3lt.Handlers;
 
 import com.google.gson.JsonObject;
 import it.ax3lt.Utils.ConfigUtils;
 import it.ax3lt.Utils.StreamUtils;
-import it.ax3lt.main.StreamAnnouncer;
+import it.ax3lt.Main.StreamAnnouncer;
 
 import java.io.IOException;
 import java.util.HashMap;

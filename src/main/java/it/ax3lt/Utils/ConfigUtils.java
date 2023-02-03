@@ -1,6 +1,6 @@
 package it.ax3lt.Utils;
 
-import it.ax3lt.main.StreamAnnouncer;
+import it.ax3lt.Main.StreamAnnouncer;
 import org.bukkit.ChatColor;
 
 import java.util.Objects;
