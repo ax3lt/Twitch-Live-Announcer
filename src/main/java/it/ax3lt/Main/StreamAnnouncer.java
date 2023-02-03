@@ -29,17 +29,14 @@ public final class StreamAnnouncer extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AnnouncerHandler.refresh();
-                } catch (IOException e) {
-                    getServer().getConsoleSender().sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("refresh_stream_error"))
-                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                            .replace("%message%", e.getMessage())
-                    );
-                }
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            try {
+                AnnouncerHandler.refresh();
+            } catch (IOException e) {
+                getServer().getConsoleSender().sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("refresh_stream_error"))
+                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                        .replace("%message%", e.getMessage())
+                );
             }
         }, 0L, getConfig().getLong("reload_time") * 20L);
     }

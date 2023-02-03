@@ -1,4 +1,4 @@
-name: StreamAnnouncer
+name: TwitchLiveAnnouncer
 version: '${project.version}'
 main: it.ax3lt.Main.StreamAnnouncer
 api-version: 1.19
@@ -8,7 +8,7 @@ commands:
   stream:
     description: Stream command
     usage: /stream <reload>
-    permission: streamaanouncer.reload
+    permission: twitchliveannouncer.reload
     permission-message: You don't have permission to use this command
     default: op
     tabcomplete: [reload]

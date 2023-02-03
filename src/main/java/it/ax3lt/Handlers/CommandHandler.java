@@ -20,7 +20,7 @@ public class CommandHandler implements CommandExecutor {
                 return true;
             }
             return true;
-        } else if (sender.hasPermission("streamannouncer.reload") && args.length == 1 &&
+        } else if (sender.hasPermission("twitchliveannouncer.reload") && args.length == 1 &&
                 args[0].equalsIgnoreCase("reload")) {
             StreamAnnouncer.getInstance().reloadConfig();
             sender.sendMessage(StreamAnnouncer.getInstance().getConfig().getString("prefix") + " Config reloaded!");
