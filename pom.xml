@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>TwitchLiveAnnouncer</name> <!-- Nome plugin -->
+    <name>TwitchLiveAnnouncer</name>
 
     <properties>
         <java.version>1.8</java.version>
