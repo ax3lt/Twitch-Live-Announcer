@@ -23,7 +23,7 @@ public class StreamCommandHandler implements CommandExecutor {
         }
 
 
-        if(args.length >= 1 && args[0].equalsIgnoreCase("add"))
+        if(args.length >= 1 && args[0].equalsIgnoreCase("add") && sender.hasPermission("twitchliveannouncer.link.add"))
         {
             if(args.length < 2)
             {
@@ -61,8 +61,7 @@ public class StreamCommandHandler implements CommandExecutor {
                     .replace("%player%", mcName));
         }
 
-        if(args.length >= 1 && args[0].equalsIgnoreCase("remove")) {
-            sender.sendMessage(args.length + "");
+        if(args.length >= 1 && args[0].equalsIgnoreCase("remove") && sender.hasPermission("twitchliveannouncer.link.add")) {
             if (args.length <= 2) {
                 sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("remove_channel_usage")));
                 return true;
