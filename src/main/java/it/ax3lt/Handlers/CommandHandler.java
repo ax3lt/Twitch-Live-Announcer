@@ -1,6 +1,7 @@
 package it.ax3lt.Handlers;
 
 import it.ax3lt.Main.StreamAnnouncer;
+import it.ax3lt.Utils.ConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,7 @@ public class CommandHandler implements CommandExecutor {
         if (!(sender instanceof Player)) {
             if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
                 StreamAnnouncer.getInstance().reloadConfig();
-                sender.sendMessage(Objects.requireNonNull(StreamAnnouncer.getInstance().getConfig().getString("reload_config"))
+                sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("reload_config"))
                         .replace("%prefix", Objects.requireNonNull(StreamAnnouncer.getInstance().getConfig().getString("prefix"))));
                 return true;
             }

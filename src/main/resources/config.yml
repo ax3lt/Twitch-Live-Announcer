@@ -1,7 +1,4 @@
 prefix: '&8[&cTwitch&8]'
-now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8]'
-not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore'
-reload: '%prefix% &8» &7Reloaded config'
 reload_time: 60
 
 # You can get your client_id and client_secret here: https://dev.twitch.tv/console/apps (Create an app)
@@ -12,7 +9,25 @@ client_secret: ''
 channels:
   - 'channel1'
 
-# Messages
+# Stream messages
+now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8]'
+not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore'
+disable-not-streaming-message: false
+
+# System messages
 reload_config: '%prefix% &8» &7Reloaded config'
 parameters_error: '%prefix% &8» &7Error while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message%'
 refresh_stream_error: '%prefix% &8» &7Error while refreshing the stream, maybe you are in timeout by twitch, try increasing the reload time - %message%'
+reload: '%prefix% &8» &7Reloaded config'
+
+# Commands to execute when a streamer starts/stops streaming
+commands:
+  enabled: false
+  start:
+    - 'tellraw @a {"text":"%channel% is now streaming","color":"gray"}'
+  stop:
+    - 'tellraw @a {"text":"%channel% is not streaming anymore","color":"gray"}'
+
+# Twitch to Minecraft username linking (you can add and remove them via commands)
+# Format:
+# minecraft_username: twitch_username

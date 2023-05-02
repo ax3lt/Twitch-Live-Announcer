@@ -34,16 +34,31 @@ public class AnnouncerHandler {
             String userId = StreamUtils.getUserId(channel, token, client_id);
             JsonObject streamInfo = StreamUtils.getStreamInfo(userId, token, client_id);
 
+            // Check stream status
             if (streamInfo.get("data").getAsJsonArray().size() == 0) {
+                // Stream is offline
                 if (streams.containsKey(channel)) {
                     streams.remove(channel);
-                    plugin.getServer().broadcastMessage(
-                            Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
+                    if(!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
+                        plugin.getServer().broadcastMessage(
+                                Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%channel%", channel)
+                        );
+                    }
+
+                    //Execute custom command
+                    if (plugin.getConfig().getBoolean("commands.enabled")) {
+                        List<String> commands = plugin.getConfig().getStringList("commands.stop");
+                        for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                    .replace("%channel%", channel)
-                    );
+                                    .replace("%channel%", channel));
+                        }
+                    }
                 }
             } else {
+                // Stream is online
                 String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString();
                 String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                 if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
@@ -54,6 +69,18 @@ public class AnnouncerHandler {
                                     .replace("%channel%", channel)
                                     .replace("%title%", streamTitle)
                     );
+
+
+                    //Execute custom command
+                    if (plugin.getConfig().getBoolean("commands.enabled")) {
+                        List<String> commands = plugin.getConfig().getStringList("commands.start");
+                        for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", streamTitle));
+                        }
+                    }
                 }
             }
         }
