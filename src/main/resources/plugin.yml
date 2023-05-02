@@ -4,11 +4,23 @@ main: it.ax3lt.Main.StreamAnnouncer
 api-version: 1.19
 author: ax3lt
 description: A simple plugin to notify when a streamer goes live
+depend:  [PlaceholderAPI]
 commands:
   stream:
     description: Stream command
-    usage: /stream <reload>
-    permission: twitchliveannouncer.reload
+    usage: /stream <reload> <add> <remove>
     permission-message: You don't have permission to use this command
     default: op
     tabcomplete: [reload]
+
+permissions:
+  twitchliveannouncer.reload:
+    description: Reload the config
+    default: op
+  twitchliveannouncer.link.add:
+    description: Add a linked user (minecraft -> twitch)
+    default: op
+  twitchliveannouncer.link.remove:
+    description: Remove a linked user (minecraft -> twitch)
+    default: op
+

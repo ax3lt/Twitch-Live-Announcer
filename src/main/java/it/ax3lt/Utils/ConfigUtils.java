@@ -9,6 +9,7 @@ public class ConfigUtils {
 
 
     public static String getConfigString(String name) {
-        return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(StreamAnnouncer.getInstance().getConfig().getString(name)));
+        return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(StreamAnnouncer.getInstance().getConfig().getString(name)
+                .replace("%prefix%", Objects.requireNonNull(StreamAnnouncer.getInstance().getConfig().getString("prefix")))));
     }
 }
