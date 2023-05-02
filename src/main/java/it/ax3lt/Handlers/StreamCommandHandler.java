@@ -27,7 +27,7 @@ public class StreamCommandHandler implements CommandExecutor {
         {
             if(args.length < 2)
             {
-                sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("add_channel_usage")) //TODO
+                sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("add_channel_usage"))
                         .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))));
                 return true;
             }
