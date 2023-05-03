@@ -6,7 +6,7 @@ Other donation link: [DonationAlerts](https://www.donationalerts.com/r/ax3lt)
 
 A Spigot plugin that broadcasts a message when a Twitch streamer goes live or offline. This plugin is still in early beta, so feel free to contribute to its development.
 
-(I didn't test it very well, so if you find any bugs, please report them to me.)
+(I didn't test it completely, so if you find any bugs, please report them to me.)
 
 - Requires PlaceholderAPI!
 
