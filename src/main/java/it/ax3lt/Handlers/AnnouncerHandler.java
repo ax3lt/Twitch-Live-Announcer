@@ -2,9 +2,9 @@ package it.ax3lt.Handlers;
 
 import com.google.gson.JsonObject;
 import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Utils.MessageUtils;
 import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Main.StreamAnnouncer;
-import org.bukkit.Bukkit;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,11 +41,16 @@ public class AnnouncerHandler {
                 if (streams.containsKey(channel)) {
                     streams.remove(channel);
                     if(!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
-                        plugin.getServer().broadcastMessage(
+
+                        MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%channel%", channel), channel);
+
+                        /*plugin.getServer().broadcastMessage(
                                 Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
                                         .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                         .replace("%channel%", channel)
-                        );
+                        );*/
                     }
 
                     //Execute custom command
@@ -68,12 +73,19 @@ public class AnnouncerHandler {
                 String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                 if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
                     streams.put(channel, streamId);
-                    plugin.getServer().broadcastMessage(
-                            Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
+
+                    MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
                                     .replace("%title%", streamTitle)
-                    );
+                                    , channel);
+
+//                    plugin.getServer().broadcastMessage(
+//                            Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
+//                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+//                                    .replace("%channel%", channel)
+//                                    .replace("%title%", streamTitle)
+//                    );
 
 
                     //Execute custom command

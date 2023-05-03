@@ -18,6 +18,9 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) { // live_<mcname>
 
+        if (!StreamAnnouncer.getInstance().getConfig().getBoolean("placeholders.enabled"))
+            return "";
+
         if (params.startsWith("status")) {
             if (player == null) {
                 return "";
@@ -41,8 +44,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 return "";
             }
 
@@ -73,11 +75,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
                 }
             }
         }
-        if (params.startsWith("status_string_") && StreamAnnouncer.getInstance().
-
-                getConfig().
-
-                getBoolean("placeholders.enabled")) {
+        if (params.startsWith("status_string_")) {
             String[] split = params.split("_");
             if (split.length == 3) {
                 String username = split[2];

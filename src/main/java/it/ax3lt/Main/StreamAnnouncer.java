@@ -13,7 +13,6 @@ import java.util.Objects;
 
 
 public final class StreamAnnouncer extends JavaPlugin {
-
     @Override
     public void onEnable() {
         Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler());

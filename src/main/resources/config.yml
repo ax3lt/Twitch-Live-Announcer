@@ -42,13 +42,15 @@ placeholders:
 
 
 # Stream messages
-now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8]'
-not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore'
+now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8] %link%'
+not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore %link%'
 disable-not-streaming-message: false
 link-made: '%prefix% &8» &7You linked &l%channel%&7 to &l%player%'
 link-already-made: '%prefix% &8» &7You already linked that user with &l%channel%'
 link-not-made: '%prefix% &8» &7You didn''t link &l%player%&7 with &l%channel%'
 link-removed: '%prefix% &8» &7You removed the link between &l%channel%&7 and &l%player%'
+url-text: '&8[&cWatch&8]'
+
 
 # System messages
 reload_config: '%prefix% &8» &7Reloaded config'
