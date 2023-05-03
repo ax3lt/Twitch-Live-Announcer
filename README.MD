@@ -4,9 +4,17 @@ A Spigot plugin that broadcasts a message when a Twitch streamer goes live or of
 
 (I didn't test it very well, so if you find any bugs, please report them to me.)
 
+- Requires PlaceholderAPI!
+
 ## Features
 - Configurable messages for when a streamer goes live or offline.
 - Streamer IDs are checked to prevent repeat messages (unless the streamer restarts their live stream).
+- You can assign different channel names to one minecraft user
+- You can run custom commands when the live goes online or offline
+- You can filter the live category, showing only those that interest you
+- Placeholders:
+  - tla_live_<mcUsername> responds with true or false if the streamer is live
+  - tla_status_string_<mcUsername> shows a custom text based on whether the streamer is live or not
 - Server restart will result in the live message being shown again.
 
 ## Usage
