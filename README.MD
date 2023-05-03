@@ -1,7 +1,7 @@
 # Donations
 If you like my work, you can support me by donating to my [PayPal](https://paypal.me/ax3lt) account.<br>
 Other donation link: [DonationAlerts](https://www.donationalerts.com/r/ax3lt)
-
+ 
 # Twitch Live Notifier for Spigot
 
 A Spigot plugin that broadcasts a message when a Twitch streamer goes live or offline. This plugin is still in early beta, so feel free to contribute to its development.
