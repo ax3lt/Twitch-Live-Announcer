@@ -5,10 +5,8 @@ import it.ax3lt.Utils.ConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,26 +21,22 @@ public class StreamCommandHandler implements CommandExecutor {
         }
 
 
-        if(args.length >= 1 && args[0].equalsIgnoreCase("add") && sender.hasPermission("twitchliveannouncer.link.add"))
-        {
-            if(args.length < 2)
-            {
+        if (args.length > 0 && args[0].equalsIgnoreCase("add") && sender.hasPermission("twitchliveannouncer.link.add")) {
+            if (args.length < 3) {
                 sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("add_channel_usage"))
                         .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))));
                 return true;
             }
+
 
             String mcName = args[1];
             String twitchName = args[2];
             // Check if mcName and twitchName are already in the config
             List<String> linkedUsers = StreamAnnouncer.getInstance().getConfig().getStringList("linked_users." + mcName);
 
-            if(linkedUsers != null && !linkedUsers.isEmpty())
-            {
-                for(String s : linkedUsers)
-                {
-                    if(s.equalsIgnoreCase(twitchName))
-                    {
+            if (linkedUsers != null && !linkedUsers.isEmpty()) {
+                for (String s : linkedUsers) {
+                    if (s.equalsIgnoreCase(twitchName)) {
                         sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("link-already-made")).replace(
                                 "%channel%", twitchName
                         ));
@@ -61,7 +55,7 @@ public class StreamCommandHandler implements CommandExecutor {
                     .replace("%player%", mcName));
         }
 
-        if(args.length >= 1 && args[0].equalsIgnoreCase("remove") && sender.hasPermission("twitchliveannouncer.link.add")) {
+        if (args.length >= 1 && args[0].equalsIgnoreCase("remove") && sender.hasPermission("twitchliveannouncer.link.add")) {
             if (args.length <= 2) {
                 sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("remove_channel_usage")));
                 return true;

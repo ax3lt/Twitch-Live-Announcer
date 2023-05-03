@@ -30,7 +30,7 @@ commands:
 
 # Filter for specific game types
 filter-stream-type:
-  enabled: true
+  enabled: false
   games:
     - 'Minecraft'
 
