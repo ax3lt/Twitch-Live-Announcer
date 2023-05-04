@@ -1,6 +1,6 @@
 package it.ax3lt.PlaceHolderApiExpansion.PlaceHolders;
 
-import it.ax3lt.Handlers.AnnouncerHandler;
+import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Main.StreamAnnouncer;
 import it.ax3lt.Utils.ConfigUtils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -25,7 +25,6 @@ public class LivePlaceholder extends PlaceholderExpansion {
         String[] split = params.split("_");
         if (split.length == 2) {
             String username = split[1];
-            Bukkit.getLogger().info("Username: " + username);
             // Check in config file if the user is linked
             ConfigurationSection linked_users = StreamAnnouncer.getInstance().getConfig().getConfigurationSection("linked_users");
             if (linked_users != null) {
@@ -34,7 +33,7 @@ public class LivePlaceholder extends PlaceholderExpansion {
                     List<String> streams = linked_users.getStringList(username);
                     if (streams != null && !streams.isEmpty()) {
                         for (String s : streams) {
-                            if (AnnouncerHandler.streams.get(s) != null) {
+                            if (StreamUtils.streams.get(s) != null) {
                                 return "true";
                             } else {
                                 return "false";

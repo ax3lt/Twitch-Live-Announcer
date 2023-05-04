@@ -1,86 +1,102 @@
 package it.ax3lt.Utils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import it.ax3lt.Main.StreamAnnouncer;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+
 
 public class StreamUtils {
-    public static String getToken(String client_id, String client_secret) throws IOException {
-        URL url = new URL("https://id.twitch.tv/oauth2/token");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Client-Id", client_id);
-        con.setDoOutput(true);
+    public static HashMap<String, String> streams = new HashMap<>();
+    private static String client_id;
+    private static String client_secret;
+    private static String token;
 
-        String params = "client_id=" + client_id + "&client_secret=" + client_secret + "&grant_type=client_credentials";
-        con.getOutputStream().write(params.getBytes());
+    static StreamAnnouncer plugin;
 
-        int responseCode = con.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String response = in.lines().collect(Collectors.joining());
-            in.close();
 
-            JsonObject json = new Gson().fromJson(response, JsonObject.class);
-            return json.get("access_token").getAsString();
-        } else {
-            throw new IOException("Failed to get token, response code: " + responseCode);
-        }
+    public static void configureParameters() throws IOException {
+        client_id = ConfigUtils.getConfigString("client_id");
+        client_secret = ConfigUtils.getConfigString("client_secret");
+        token = TwitchApi.getToken(client_id, client_secret);
+        plugin = StreamAnnouncer.getInstance();
     }
 
+    public static void refresh() throws IOException {
+        List<String> channels = plugin.getConfig().getStringList("channels");
 
-    public static String getUserId(String twitchUser, String token, String clientId) throws IOException {
-        URL url = new URL("https://api.twitch.tv/helix/users?login=" + twitchUser);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("Authorization", "Bearer " + token);
-        con.setRequestProperty("Client-Id", clientId);
+        for (String channel : channels) {
+            String userId = TwitchApi.getUserId(channel, token, client_id);
+            JsonObject streamInfo = TwitchApi.getStreamInfo(userId, token, client_id);
 
-        int responseCode = con.getResponseCode();
-        if (responseCode != 200) {
-            throw new IOException("Failed to get user data: HTTP error code: " + responseCode);
+            // Check stream status
+            if (streamInfo.get("data").getAsJsonArray().size() == 0) {
+                // Stream is offline
+                if (streams.containsKey(channel)) {
+                    streams.remove(channel);
+                    if(!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
+
+                        MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%channel%", channel), channel);
+
+                        /*plugin.getServer().broadcastMessage(
+                                Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%channel%", channel)
+                        );*/
+                    }
+
+                    //Execute custom command
+                    if (plugin.getConfig().getBoolean("commands.enabled")) {
+                        List<String> commands = plugin.getConfig().getStringList("commands.stop");
+                        for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel));
+                        }
+                    }
+                }
+            } else {
+                // Stream is online
+                String streamGameName = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("game_name").getAsString();
+                if(plugin.getConfig().getBoolean("filter-stream-type.enabled") && !plugin.getConfig().getStringList("filter-stream-type.games").contains(streamGameName)) {
+                    return;
+                }
+                String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString();
+                String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
+                if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
+                    streams.put(channel, streamId);
+
+                    MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", streamTitle)
+                                    , channel);
+
+//                    plugin.getServer().broadcastMessage(
+//                            Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
+//                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+//                                    .replace("%channel%", channel)
+//                                    .replace("%title%", streamTitle)
+//                    );
+
+
+                    //Execute custom command
+                    if (plugin.getConfig().getBoolean("commands.enabled")) {
+                        List<String> commands = plugin.getConfig().getStringList("commands.start");
+                        for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", streamTitle));
+                        }
+                    }
+                }
+            }
         }
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        JsonObject userData = JsonParser.parseString(response.toString()).getAsJsonObject();
-        return userData.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
-    }
-
-
-    public static JsonObject getStreamInfo(String userId, String token, String clientId) throws IOException {
-        URL url = new URL("https://api.twitch.tv/helix/streams?user_id=" + userId);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("Authorization", "Bearer " + token);
-        con.setRequestProperty("Client-Id", clientId);
-
-        int responseCode = con.getResponseCode();
-        if (responseCode != 200) {
-            throw new IOException("Failed to get stream information: HTTP error code: " + responseCode);
-        }
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        return JsonParser.parseString(response.toString()).getAsJsonObject();
     }
 }

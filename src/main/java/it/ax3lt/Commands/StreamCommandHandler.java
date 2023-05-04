@@ -1,5 +1,6 @@
-package it.ax3lt.Handlers;
+package it.ax3lt.Commands;
 
+import it.ax3lt.BungeeManager.MessageSender;
 import it.ax3lt.Commands.Link.AddCommand;
 import it.ax3lt.Commands.Global.ReloadCommand;
 import it.ax3lt.Commands.Link.RemoveCommand;

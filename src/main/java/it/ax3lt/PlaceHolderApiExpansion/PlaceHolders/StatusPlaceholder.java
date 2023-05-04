@@ -1,6 +1,6 @@
 package it.ax3lt.PlaceHolderApiExpansion.PlaceHolders;
 
-import it.ax3lt.Handlers.AnnouncerHandler;
+import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Main.StreamAnnouncer;
 import it.ax3lt.Utils.ConfigUtils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -35,7 +35,7 @@ public class StatusPlaceholder extends PlaceholderExpansion {
                 List<String> streams = linked_users.getStringList(username);
                 if (streams != null && !streams.isEmpty()) {
                     for (String s : streams) {
-                        if (AnnouncerHandler.streams.get(s) != null) {
+                        if (StreamUtils.streams.get(s) != null) {
                             return ConfigUtils.getConfigString("placeholders.live");
                         } else {
                             return ConfigUtils.getConfigString("placeholders.offline");
