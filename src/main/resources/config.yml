@@ -59,3 +59,5 @@ refresh_stream_error: '%prefix% &8» &7Error while refreshing the stream, maybe 
 reload: '%prefix% &8» &7Reloaded config'
 remove_channel_usage: '%prefix% &8» &7Usage: /twitch remove <mcusername> <twitchusername>'
 add_channel_usage: '%prefix% &8» &7Usage: /twitch add <mcusername> <twitchusername>'
+# Placeholder used without the player being linked
+link-inexistent: 'Link doesn''t exist'
