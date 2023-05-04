@@ -5,7 +5,6 @@ import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.LivePlaceholder;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.StatusPlaceholder;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.StatusStringPlaceholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
