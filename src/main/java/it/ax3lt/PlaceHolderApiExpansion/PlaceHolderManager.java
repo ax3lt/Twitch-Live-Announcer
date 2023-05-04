@@ -6,12 +6,9 @@ import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.StatusPlaceholder;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.StatusStringPlaceholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class PlaceHolderManager extends PlaceholderExpansion {
-    private final Plugin plugin;
-
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
@@ -45,9 +42,5 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     @Override
     public @NotNull String getVersion() {
         return "1.3";
-    }
-
-    public PlaceHolderManager(Plugin p) {
-        this.plugin = p;
     }
 }

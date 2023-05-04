@@ -40,6 +40,11 @@ placeholders:
   live: '&c[Live]'
   offline: '&7[Offline]'
 
+# Bungee mode !! Requires restart to apply changes !!
+bungee:
+  enabled: false
+
+
 
 # Stream messages
 now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8] %link%'
