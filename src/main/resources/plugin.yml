@@ -7,6 +7,9 @@ description: A simple plugin to notify when a streamer goes live
 depend:  [PlaceholderAPI]
 commands:
   stream:
+    aliases:
+      - twitch
+      - tla
     description: Stream command
     usage: /stream <reload> <add> <remove>
     permission-message: You don't have permission to use this command
