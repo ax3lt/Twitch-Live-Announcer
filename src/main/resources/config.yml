@@ -59,8 +59,8 @@ url-text: '&8[&cWatch&8]'
 
 # System messages
 reload_config: '%prefix% &8» &7Reloaded config'
-parameters_error: '%prefix% &8» &7Error while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message%'
-refresh_stream_error: '%prefix% &8» &7Error while refreshing the stream, maybe you are in timeout by twitch, try increasing the reload time - %message%'
+parameters_error: '%prefix% &8» &cError while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message%'
+refresh_stream_error: '%prefix% &8» &cError while refreshing the stream, maybe you are in timeout by twitch, try increasing the reload time - %message%'
 reload: '%prefix% &8» &7Reloaded config'
 remove_channel_usage: '%prefix% &8» &7Usage: /twitch remove <mcusername> <twitchusername>'
 add_channel_usage: '%prefix% &8» &7Usage: /twitch add <mcusername> <twitchusername>'

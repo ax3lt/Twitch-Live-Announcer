@@ -1,8 +1,7 @@
 package it.ax3lt.Commands;
 
-import it.ax3lt.BungeeManager.MessageSender;
-import it.ax3lt.Commands.Link.AddCommand;
 import it.ax3lt.Commands.Global.ReloadCommand;
+import it.ax3lt.Commands.Link.AddCommand;
 import it.ax3lt.Commands.Link.RemoveCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -42,12 +42,6 @@ public class StreamUtils {
                         MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
                                         .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                         .replace("%channel%", channel), channel);
-
-                        /*plugin.getServer().broadcastMessage(
-                                Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
-                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                        .replace("%channel%", channel)
-                        );*/
                     }
 
                     //Execute custom command
@@ -76,13 +70,6 @@ public class StreamUtils {
                                     .replace("%channel%", channel)
                                     .replace("%title%", streamTitle)
                                     , channel);
-
-//                    plugin.getServer().broadcastMessage(
-//                            Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
-//                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-//                                    .replace("%channel%", channel)
-//                                    .replace("%title%", streamTitle)
-//                    );
 
 
                     //Execute custom command

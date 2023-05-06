@@ -41,6 +41,11 @@ public class PlaceHolderManager extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.3";
+        return "1.4";
+    }
+
+        @Override
+    public boolean persist() {
+        return true; // This is required or else PlaceholderAPI will unregister the Expansion on reload
     }
 }

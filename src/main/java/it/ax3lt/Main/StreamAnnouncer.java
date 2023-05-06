@@ -1,16 +1,14 @@
 package it.ax3lt.Main;
 
 import it.ax3lt.BungeeManager.MessageListener;
-import it.ax3lt.Utils.DiscordWebhook;
-import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Commands.StreamCommandHandler;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolderManager;
 import it.ax3lt.TabComplete.StreamCommandTabHandler;
 import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Utils.StreamUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
