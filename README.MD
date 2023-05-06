@@ -22,6 +22,7 @@ A Spigot plugin that broadcasts a message when a Twitch streamer goes live or of
   - %tla_status% automatic user recognition
 - Stream link: if you put %link% in now_streaming it will be replaced with the stream link (using a custom text)
 - Server restart will result in the live message being shown again.
+- Bungeecord support: you can choose to broadcast the messages from bungeecord/forks
 
 ## Usage
 1. Install the plugin on your Spigot server.
