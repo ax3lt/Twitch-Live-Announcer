@@ -44,7 +44,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
         return "1.4";
     }
 
-        @Override
+    @Override
     public boolean persist() {
         return true; // This is required or else PlaceholderAPI will unregister the Expansion on reload
     }

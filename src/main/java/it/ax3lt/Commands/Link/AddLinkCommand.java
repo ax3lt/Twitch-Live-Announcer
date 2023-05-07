@@ -10,24 +10,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class AddCommand implements CommandExecutor {
-
-
+public class AddLinkCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("twitchliveannouncer.link.add"))
             return true;
 
 
-        if (args.length < 3) {
-            sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("add_channel_usage"))
+        if (args.length < 4) {
+            sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("add_link_usage"))
                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))));
             return true;
         }
 
 
-        String mcName = args[1];
-        String twitchName = args[2];
+        String mcName = args[2];
+        String twitchName = args[3];
         // Check if mcName and twitchName are already in the config
         List<String> linkedUsers = StreamAnnouncer.getInstance().getConfig().getStringList("linked_users." + mcName);
 
