@@ -8,13 +8,13 @@ import it.ax3lt.Commands.Link.AddLinkCommand;
 import it.ax3lt.Commands.Link.ListLinkCommand;
 import it.ax3lt.Commands.Link.RemoveLinkCommand;
 import it.ax3lt.Main.StreamAnnouncer;
+import it.ax3lt.Utils.ConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class StreamCommandHandler implements CommandExecutor {
-
     // /stream
     // reload
     // link
@@ -27,25 +27,34 @@ public class StreamCommandHandler implements CommandExecutor {
     //      list
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+        // Help messages
+        if (args.length == 0)
+            sender.sendMessage(ConfigUtils.getConfigString("command_usage"));
+        else if (args.length == 1 && args[0].equalsIgnoreCase("link"))
+            sender.sendMessage(ConfigUtils.getConfigString("link_command_usage"));
+        else if (args.length == 1 && args[0].equalsIgnoreCase("channels"))
+            sender.sendMessage(ConfigUtils.getConfigString("channels_command_usage"));
+
+            // Reload
+        else if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
             new ReloadCommand().onCommand(sender, command, label, args);
-        }
-        // Link
-        else if (args.length >= 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("add")) {
+
+            // Link
+        else if (args.length >= 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("add"))
             new AddLinkCommand().onCommand(sender, command, label, args);
-        } else if (args.length >= 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("remove")) {
+        else if (args.length >= 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("remove"))
             new RemoveLinkCommand().onCommand(sender, command, label, args);
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("list")) {
+        else if (args.length == 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("list"))
             new ListLinkCommand().onCommand(sender, command, label, args);
-        }
-        // Channels
-        else if (args.length >= 2 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("add")) {
+
+            // Channels
+        else if (args.length >= 2 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("add"))
             new AddChannelCommand().onCommand(sender, command, label, args);
-        } else if (args.length >= 2 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("remove")) {
+        else if (args.length >= 2 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("remove"))
             new RemoveChannelCommand().onCommand(sender, command, label, args);
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("list")) {
+        else if (args.length == 2 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("list"))
             new ListChannelCommand().onCommand(sender, command, label, args);
-        }
+
         return true;
     }
 }

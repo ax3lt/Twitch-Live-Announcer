@@ -44,7 +44,7 @@ public class LivePlaceholder extends PlaceholderExpansion {
                 }
             }
         }
-        return ConfigUtils.getConfigString("link-inexistent");
+        return ConfigUtils.getConfigString("link_inexistent");
     }
 
     @Override
