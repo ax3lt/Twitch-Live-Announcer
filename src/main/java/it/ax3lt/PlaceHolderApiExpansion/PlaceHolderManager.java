@@ -1,6 +1,6 @@
 package it.ax3lt.PlaceHolderApiExpansion;
 
-import it.ax3lt.Main.StreamAnnouncer;
+import it.ax3lt.Main.TLA;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.LivePlaceholder;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.StatusPlaceholder;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolders.StatusStringPlaceholder;
@@ -13,7 +13,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
 
-        if (!StreamAnnouncer.getInstance().getConfig().getBoolean("placeholders.enabled"))
+        if (!TLA.getInstance().getConfig().getBoolean("placeholders.enabled"))
             return null;
 
         if (params.startsWith("status")) {

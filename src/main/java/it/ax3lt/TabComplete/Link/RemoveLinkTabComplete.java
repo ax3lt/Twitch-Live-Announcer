@@ -1,12 +1,10 @@
 package it.ax3lt.TabComplete.Link;
 
-import it.ax3lt.Main.StreamAnnouncer;
+import it.ax3lt.Main.TLA;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +23,7 @@ public class RemoveLinkTabComplete {
             //   <mcname>: <twitchname>
 
             List<String> players = new ArrayList<>();
-            ConfigurationSection linkedUsers = StreamAnnouncer.getInstance().getConfig().getConfigurationSection("linked_users");
+            ConfigurationSection linkedUsers = TLA.getInstance().getConfig().getConfigurationSection("linked_users");
             if (linkedUsers != null) {
                 for (String key : linkedUsers.getKeys(false)) {
                     players.add(key);
@@ -38,7 +36,7 @@ public class RemoveLinkTabComplete {
             return players;
         } else if (args.length == 4) { // /stream link remove <mcname>
             //                                                    ↑
-            List<String> players = StreamAnnouncer.getInstance().getConfig().getStringList("linked_users." + args[2]);
+            List<String> players = TLA.getInstance().getConfig().getStringList("linked_users." + args[2]);
 
             if (players == null) {
                 return Collections.singletonList("Empty list");

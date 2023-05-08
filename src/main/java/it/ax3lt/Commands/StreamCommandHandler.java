@@ -7,8 +7,7 @@ import it.ax3lt.Commands.Global.ReloadCommand;
 import it.ax3lt.Commands.Link.AddLinkCommand;
 import it.ax3lt.Commands.Link.ListLinkCommand;
 import it.ax3lt.Commands.Link.RemoveLinkCommand;
-import it.ax3lt.Main.StreamAnnouncer;
-import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,11 +28,11 @@ public class StreamCommandHandler implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         // Help messages
         if (args.length == 0)
-            sender.sendMessage(ConfigUtils.getConfigString("command_usage"));
+            sender.sendMessage(MessagesConfigUtils.getString("command_usage"));
         else if (args.length == 1 && args[0].equalsIgnoreCase("link"))
-            sender.sendMessage(ConfigUtils.getConfigString("link_command_usage"));
+            sender.sendMessage(MessagesConfigUtils.getString("link_command_usage"));
         else if (args.length == 1 && args[0].equalsIgnoreCase("channels"))
-            sender.sendMessage(ConfigUtils.getConfigString("channels_command_usage"));
+            sender.sendMessage(MessagesConfigUtils.getString("channels_command_usage"));
 
             // Reload
         else if (args.length == 1 && args[0].equalsIgnoreCase("reload"))

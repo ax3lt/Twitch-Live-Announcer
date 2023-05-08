@@ -4,7 +4,8 @@ import it.ax3lt.BungeeManager.MessageListener;
 import it.ax3lt.Commands.StreamCommandHandler;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolderManager;
 import it.ax3lt.TabComplete.StreamCommandTabHandler;
-import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Utils.Configs.ConfigUtils;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import it.ax3lt.Utils.StreamUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 
-public final class StreamAnnouncer extends JavaPlugin {
+public final class TLA extends JavaPlugin {
 
     public static boolean bungeeMode = false;
 
@@ -26,6 +27,9 @@ public final class StreamAnnouncer extends JavaPlugin {
             new PlaceHolderManager().register();
         }
         saveDefaultConfig();
+        MessagesConfigUtils.setup();
+
+
 
 
         // Register BungeeCord channel
@@ -40,7 +44,7 @@ public final class StreamAnnouncer extends JavaPlugin {
             StreamUtils.configureParameters();
         } catch (IOException e) {
 
-            getServer().getConsoleSender().sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString(("parameters_error")))
+            getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString(("parameters_error")))
                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                     .replace("%message%", e.getMessage())
             );
@@ -51,7 +55,7 @@ public final class StreamAnnouncer extends JavaPlugin {
             try {
                 StreamUtils.refresh();
             } catch (IOException e) {
-                getServer().getConsoleSender().sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("refresh_stream_error"))
+                getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("refresh_stream_error"))
                         .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                         .replace("%message%", e.getMessage())
                 );
@@ -66,8 +70,8 @@ public final class StreamAnnouncer extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
     }
 
-    public static StreamAnnouncer getInstance() {
-        return getPlugin(StreamAnnouncer.class);
+    public static TLA getInstance() {
+        return getPlugin(TLA.class);
     }
 }
 

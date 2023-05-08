@@ -1,7 +1,7 @@
 package it.ax3lt.Commands.Channels;
 
-import it.ax3lt.Main.StreamAnnouncer;
-import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,13 +17,13 @@ public class ListChannelCommand implements CommandExecutor {
         if (!sender.hasPermission("twitchliveannouncer.channels.list"))
             return true;
 
-        List<String> channels = StreamAnnouncer.getInstance().getConfig().getStringList("channels");
+        List<String> channels = TLA.getInstance().getConfig().getStringList("channels");
         if (channels.isEmpty())
-            sender.sendMessage(ConfigUtils.getConfigString("channels-list-empty"));
+            sender.sendMessage(MessagesConfigUtils.getString("channel-list-empty"));
         else {
-            sender.sendMessage(ConfigUtils.getConfigString("show-channels-header"));
+            sender.sendMessage(MessagesConfigUtils.getString("show-channels-header"));
             for (String channel : channels)
-                sender.sendMessage(ConfigUtils.getConfigString("show-channels-format")
+                sender.sendMessage(MessagesConfigUtils.getString("show-channels-format")
                         .replace("%channel%", channel));
         }
         return true;

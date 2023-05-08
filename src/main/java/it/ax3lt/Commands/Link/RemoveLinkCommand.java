@@ -1,7 +1,7 @@
 package it.ax3lt.Commands.Link;
 
-import it.ax3lt.Main.StreamAnnouncer;
-import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,16 +17,16 @@ public class RemoveLinkCommand implements CommandExecutor {
             return true;
 
         if (args.length <= 3) {
-            sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("remove_link_usage")));
+            sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("remove_link_usage")));
             return true;
         }
 
         String mcName = args[2];
         String twitchName = args[3];
         // Check if mcName and twitchName are in the config
-        List<String> linkedUsers = StreamAnnouncer.getInstance().getConfig().getStringList("linked_users." + mcName);
+        List<String> linkedUsers = TLA.getInstance().getConfig().getStringList("linked_users." + mcName);
         if (linkedUsers == null || linkedUsers.isEmpty()) {
-            sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("link-not-made"))
+            sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-not-made"))
                     .replace("%channel%", twitchName)
                     .replace("%player%", mcName));
             return true;
@@ -35,10 +35,10 @@ public class RemoveLinkCommand implements CommandExecutor {
         for (String s : linkedUsers) {
             if (s.equalsIgnoreCase(twitchName)) {
                 linkedUsers.remove(s);
-                StreamAnnouncer.getInstance().getConfig().set("linked_users." + mcName, linkedUsers);
-                StreamAnnouncer.getInstance().saveConfig();
-                StreamAnnouncer.getInstance().reloadConfig();
-                sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("link-removed"))
+                TLA.getInstance().getConfig().set("linked_users." + mcName, linkedUsers);
+                TLA.getInstance().saveConfig();
+                TLA.getInstance().reloadConfig();
+                sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-removed"))
                         .replace("%channel%", twitchName)
                         .replace("%player%", mcName));
                 return true;

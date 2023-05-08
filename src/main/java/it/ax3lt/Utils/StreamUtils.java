@@ -1,7 +1,9 @@
 package it.ax3lt.Utils;
 
 import com.google.gson.JsonObject;
-import it.ax3lt.Main.StreamAnnouncer;
+import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.ConfigUtils;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,14 +17,14 @@ public class StreamUtils {
     private static String client_secret;
     private static String token;
 
-    static StreamAnnouncer plugin;
+    static TLA plugin;
 
 
     public static void configureParameters() throws IOException {
         client_id = ConfigUtils.getConfigString("client_id");
         client_secret = ConfigUtils.getConfigString("client_secret");
         token = TwitchApi.getToken(client_id, client_secret);
-        plugin = StreamAnnouncer.getInstance();
+        plugin = TLA.getInstance();
     }
 
     public static void refresh() throws IOException {
@@ -39,7 +41,7 @@ public class StreamUtils {
                     streams.remove(channel);
                     if (!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
 
-                        MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
+                        MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
                                 .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                 .replace("%channel%", channel), channel);
                     }
@@ -69,7 +71,7 @@ public class StreamUtils {
                 if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
                     streams.put(channel, streamId);
 
-                    MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("now_streaming"))
+                    MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
                                     .replace("%title%", streamTitle)
