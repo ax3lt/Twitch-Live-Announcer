@@ -34,6 +34,12 @@ filter-stream-type:
   games:
     - 'Minecraft'
 
+# Check if the stream title contains a specific string (case-sensitive)
+filter-stream-title:
+  enabled: false
+  text:
+    - 'Minecraft server!'
+
 # Placeholders (requires PlaceholderAPI)
 placeholders:
   enabled: true

@@ -37,11 +37,11 @@ public class StreamUtils {
                 // Stream is offline
                 if (streams.containsKey(channel)) {
                     streams.remove(channel);
-                    if(!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
+                    if (!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
 
                         MessageUtils.broadcastMessage(Objects.requireNonNull(ConfigUtils.getConfigString("not_streaming"))
-                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                        .replace("%channel%", channel), channel);
+                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                .replace("%channel%", channel), channel);
                     }
 
                     //Execute custom command
@@ -57,10 +57,14 @@ public class StreamUtils {
             } else {
                 // Stream is online
                 String streamGameName = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("game_name").getAsString();
-                if(plugin.getConfig().getBoolean("filter-stream-type.enabled") && !plugin.getConfig().getStringList("filter-stream-type.games").contains(streamGameName)) {
-                    return;
-                }
                 String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString();
+
+
+                if (plugin.getConfig().getBoolean("filter-stream-type.enabled") && plugin.getConfig().getStringList("filter-stream-type.games").stream().noneMatch(streamGameName::contains))
+                    return;
+                if (plugin.getConfig().getBoolean("filter-stream-title.enabled") && plugin.getConfig().getStringList("filter-stream-title.text").stream().noneMatch(streamTitle::contains))
+                    return;
+
                 String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                 if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
                     streams.put(channel, streamId);
@@ -69,7 +73,7 @@ public class StreamUtils {
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
                                     .replace("%title%", streamTitle)
-                                    , channel);
+                            , channel);
 
 
                     //Execute custom command
