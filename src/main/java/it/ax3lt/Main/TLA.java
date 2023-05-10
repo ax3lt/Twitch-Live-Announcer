@@ -51,7 +51,7 @@ public final class TLA extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+        getServer().getScheduler().scheduleAsyncRepeatingTask(this, () -> {
             try {
                 StreamUtils.refresh();
             } catch (IOException e) {
