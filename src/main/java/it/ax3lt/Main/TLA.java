@@ -1,5 +1,6 @@
 package it.ax3lt.Main;
 
+import it.ax3lt.Bstats.Metrics;
 import it.ax3lt.BungeeManager.MessageListener;
 import it.ax3lt.Commands.StreamCommandHandler;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolderManager;
@@ -17,6 +18,7 @@ import java.util.Objects;
 public final class TLA extends JavaPlugin {
 
     public static boolean bungeeMode = false;
+    Metrics m;
 
     @Override
     public void onEnable() {
@@ -29,6 +31,8 @@ public final class TLA extends JavaPlugin {
         saveDefaultConfig();
         MessagesConfigUtils.setup();
 
+        if(getConfig().getBoolean("bstats-enabled"))
+            m = new Metrics(this, 18430);
 
 
 
