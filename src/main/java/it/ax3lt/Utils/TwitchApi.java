@@ -56,7 +56,11 @@ public class TwitchApi {
         }
         in.close();
 
-        JsonObject userData = JsonParser.parseString(response.toString()).getAsJsonObject();
+        Gson gson = new Gson();
+        JsonObject userData = gson.fromJson(response.toString(), JsonObject.class);
+
+
+//        JsonObject userData = JsonParser.parseString(response.toString()).getAsJsonObject();
         return userData.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
     }
 
@@ -81,6 +85,7 @@ public class TwitchApi {
         }
         in.close();
 
-        return JsonParser.parseString(response.toString()).getAsJsonObject();
+        return new Gson().fromJson(response.toString(), JsonObject.class);
+//        return JsonParser.parseString(response.toString()).getAsJsonObject();
     }
 }
