@@ -34,6 +34,12 @@ filter-stream-type:
   games:
     - 'Minecraft'
 
+# Check if the stream title contains a specific string (case-sensitive)
+filter-stream-title:
+  enabled: false
+  text:
+    - 'Minecraft server!'
+
 # Placeholders (requires PlaceholderAPI)
 placeholders:
   enabled: true
@@ -44,25 +50,6 @@ placeholders:
 bungee:
   enabled: false
 
-
-
-# Stream messages
-now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8] %link%'
-not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore %link%'
 disable-not-streaming-message: false
-link-made: '%prefix% &8» &7You linked &l%channel%&7 to &l%player%'
-link-already-made: '%prefix% &8» &7You already linked that user with &l%channel%'
-link-not-made: '%prefix% &8» &7You didn''t link &l%player%&7 with &l%channel%'
-link-removed: '%prefix% &8» &7You removed the link between &l%channel%&7 and &l%player%'
-url-text: '&8[&cWatch&8]'
 
-
-# System messages
-reload_config: '%prefix% &8» &7Reloaded config'
-parameters_error: '%prefix% &8» &cError while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message%'
-refresh_stream_error: '%prefix% &8» &cError while refreshing the stream, maybe you are in timeout by twitch, try increasing the reload time - %message%'
-reload: '%prefix% &8» &7Reloaded config'
-remove_channel_usage: '%prefix% &8» &7Usage: /twitch remove <mcusername> <twitchusername>'
-add_channel_usage: '%prefix% &8» &7Usage: /twitch add <mcusername> <twitchusername>'
-# Placeholder used without the player being linked
-link-inexistent: 'Link doesn''t exist'
+bstats-enabled: true

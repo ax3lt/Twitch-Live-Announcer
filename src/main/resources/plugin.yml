@@ -1,10 +1,10 @@
 name: TwitchLiveAnnouncer
 version: '${project.version}'
-main: it.ax3lt.Main.StreamAnnouncer
+main: it.ax3lt.Main.TLA
 api-version: 1.19
 author: ax3lt
 description: A simple plugin to notify when a streamer goes live
-depend:  [PlaceholderAPI]
+depend: [ PlaceholderAPI ]
 commands:
   stream:
     aliases:
@@ -14,7 +14,7 @@ commands:
     usage: /stream <reload> <add> <remove>
     permission-message: You don't have permission to use this command
     default: op
-    tabcomplete: [reload]
+    tabcomplete: [ reload ]
 
 permissions:
   twitchliveannouncer.reload:
@@ -26,4 +26,15 @@ permissions:
   twitchliveannouncer.link.remove:
     description: Remove a linked user (minecraft -> twitch)
     default: op
+  twitchliveannouncer.link.list:
+    description: List all linked users
+    default: op
+  twitchliveannouncer.channels.add:
+    description: Add a channel to the list of channels to check
+    default: op
+  twitchliveannouncer.channels.remove:
+    description: Remove a channel from the list of channels to check
+    default: op
+  twitchliveannouncer.channels.list:
+    description: List all channels to check
 

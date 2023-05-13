@@ -1,8 +1,9 @@
 package it.ax3lt.PlaceHolderApiExpansion.PlaceHolders;
 
+import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.ConfigUtils;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import it.ax3lt.Utils.StreamUtils;
-import it.ax3lt.Main.StreamAnnouncer;
-import it.ax3lt.Utils.ConfigUtils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -25,7 +26,7 @@ public class StatusStringPlaceholder extends PlaceholderExpansion {
         if (split.length == 3) {
             String username = split[2];
             // Check in config file if the user is linked
-            ConfigurationSection linked_users = StreamAnnouncer.getInstance().getConfig().getConfigurationSection("linked_users");
+            ConfigurationSection linked_users = TLA.getInstance().getConfig().getConfigurationSection("linked_users");
             if (linked_users != null) {
                 if (linked_users.contains(username)) {
                     // Check if the user is online
@@ -43,7 +44,7 @@ public class StatusStringPlaceholder extends PlaceholderExpansion {
                 }
             }
         }
-        return ConfigUtils.getConfigString("link-inexistent");
+        return MessagesConfigUtils.getString("link-inexistent");
     }
 
     @Override

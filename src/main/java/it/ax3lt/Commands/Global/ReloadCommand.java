@@ -1,7 +1,7 @@
 package it.ax3lt.Commands.Global;
 
-import it.ax3lt.Main.StreamAnnouncer;
-import it.ax3lt.Utils.ConfigUtils;
+import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +15,10 @@ public class ReloadCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("twitchliveannouncer.reload"))
             return true;
-        StreamAnnouncer.getInstance().reloadConfig();
-        sender.sendMessage(Objects.requireNonNull(ConfigUtils.getConfigString("reload_config"))
-                .replace("%prefix", Objects.requireNonNull(StreamAnnouncer.getInstance().getConfig().getString("prefix"))));
+        TLA.getInstance().reloadConfig();
+        MessagesConfigUtils.reload();
+        sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("reload_config"))
+                .replace("%prefix%", Objects.requireNonNull(TLA.getInstance().getConfig().getString("prefix"))));
         return true;
     }
 }
