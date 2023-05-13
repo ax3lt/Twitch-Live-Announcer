@@ -51,3 +51,5 @@ bungee:
   enabled: false
 
 disable-not-streaming-message: false
+
+bstats-enabled: true
