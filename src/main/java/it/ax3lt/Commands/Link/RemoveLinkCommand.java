@@ -35,7 +35,10 @@ public class RemoveLinkCommand implements CommandExecutor {
         for (String s : linkedUsers) {
             if (s.equalsIgnoreCase(twitchName)) {
                 linkedUsers.remove(s);
-                TLA.getInstance().getConfig().set("linked_users." + mcName, linkedUsers);
+                if(linkedUsers.isEmpty())
+                    TLA.getInstance().getConfig().set("linked_users." + mcName, null);
+                else
+                    TLA.getInstance().getConfig().set("linked_users." + mcName, linkedUsers);
                 TLA.getInstance().saveConfig();
                 TLA.getInstance().reloadConfig();
                 sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-removed"))
