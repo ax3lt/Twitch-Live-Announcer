@@ -19,6 +19,9 @@ permissions:
   twitchliveannouncer.reload:
     description: Reload the config
     default: op
+  twitchliveannouncer.forceCheck:
+    description: Force live check for all channels
+    default: op
   twitchliveannouncer.link.add:
     description: Add a linked user (minecraft -> twitch)
     default: op
@@ -36,4 +39,3 @@ permissions:
     default: op
   twitchliveannouncer.channels.list:
     description: List all channels to check
-

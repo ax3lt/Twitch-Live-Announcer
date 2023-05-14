@@ -5,6 +5,8 @@ reload_time: 60
 client_id: ''
 client_secret: ''
 
+check_updates: true
+
 # The list of channels you want to check
 channels:
   - 'channel1'

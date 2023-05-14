@@ -8,6 +8,7 @@ import it.ax3lt.TabComplete.StreamCommandTabHandler;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import it.ax3lt.Utils.StreamUtils;
+import it.ax3lt.Utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,6 +34,9 @@ public final class TLA extends JavaPlugin {
 
         if(getConfig().getBoolean("bstats-enabled"))
             m = new Metrics(this, 18430);
+
+        if(getConfig().getBoolean("check_updates"))
+            new UpdateChecker().checkUpdate();
 
 
 

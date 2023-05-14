@@ -27,7 +27,7 @@ public class StreamCommandTabHandler implements TabCompleter {
         //      list
 
         if (args.length == 1) { // /stream
-            return List.of("reload", "link", "channels");
+            return List.of("reload", "forceCheck", "link", "channels");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("link")) { // /stream link
             return List.of("add", "remove", "list");

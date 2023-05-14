@@ -37,3 +37,7 @@ add_link_usage: '%prefix% &8» &7Usage: /twitch link add <mcusername> <twitchuse
 remove_link_usage: '%prefix% &8» &7Usage: /twitch link remove <mcusername> <twitchusername>'
 # Placeholder used without the player being linked
 link_inexistent: 'Link doesn''t exist'
+force_refresh_success: '%prefix% &8» &7Forced stream refresh'
+force_refresh_error: '%prefix% &8» &cError while forcing stream refresh'
+update_available: '%prefix% &8» &7An update is available, download it here: &c%link%'
+update_check_error: '%prefix% &8» &cError while checking for updates'
