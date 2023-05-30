@@ -61,11 +61,13 @@ public class StreamUtils {
                         //Execute custom command
                         if (plugin.getConfig().getBoolean("commands.enabled")) {
                             List<String> commands = plugin.getConfig().getStringList("commands.stop");
-                            for (String command : commands) {
-                                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                        .replace("%channel%", channel));
-                            }
+                              Bukkit.getScheduler().runTask(plugin, () -> {
+                                for (String command : commands) {
+                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                            .replace("%channel%", channel));
+                                }
+                            });
                         }
                     }
                 } else {
@@ -93,12 +95,14 @@ public class StreamUtils {
                         //Execute custom command
                         if (plugin.getConfig().getBoolean("commands.enabled")) {
                             List<String> commands = plugin.getConfig().getStringList("commands.start");
-                            for (String command : commands) {
-                                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                        .replace("%channel%", channel)
-                                        .replace("%title%", streamTitle));
-                            }
+                            Bukkit.getScheduler().runTask(plugin, () -> {
+                                for (String command : commands) {
+                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                            .replace("%channel%", channel)
+                                            .replace("%title%", streamTitle));
+                                }
+                            });
                         }
                     }
                 }
