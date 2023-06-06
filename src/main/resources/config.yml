@@ -52,6 +52,7 @@ placeholders:
 bungee:
   enabled: false
 
+disable-streaming-message: false
 disable-not-streaming-message: false
 
 bstats-enabled: true

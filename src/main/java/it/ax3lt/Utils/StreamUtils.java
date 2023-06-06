@@ -36,6 +36,12 @@ public class StreamUtils {
                 String userId = null;
                 try {
                     userId = TwitchApi.getUserId(channel, token, client_id);
+                    if(userId == null)
+                    {
+                        Bukkit.getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("invalid_channel"))
+                                .replace("%channel%", channel));
+                        continue;
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -61,7 +67,7 @@ public class StreamUtils {
                         //Execute custom command
                         if (plugin.getConfig().getBoolean("commands.enabled")) {
                             List<String> commands = plugin.getConfig().getStringList("commands.stop");
-                              Bukkit.getScheduler().runTask(plugin, () -> {
+                            Bukkit.getScheduler().runTask(plugin, () -> {
                                 for (String command : commands) {
                                     plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
                                             .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
@@ -85,13 +91,15 @@ public class StreamUtils {
                     if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
                         streams.put(channel, streamId);
 
-                        MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
-                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                        .replace("%channel%", channel)
-                                        .replace("%title%", streamTitle)
-                                , channel);
+                        if (!plugin.getConfig().getBoolean("disable-streaming-message")) {
+                            MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
+                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                            .replace("%channel%", channel)
+                                            .replace("%title%", streamTitle)
+                                    , channel);
 
 
+                        }
                         //Execute custom command
                         if (plugin.getConfig().getBoolean("commands.enabled")) {
                             List<String> commands = plugin.getConfig().getStringList("commands.start");

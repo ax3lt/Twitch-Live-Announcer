@@ -2,12 +2,14 @@ package it.ax3lt.Utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TwitchApi {
@@ -58,8 +60,8 @@ public class TwitchApi {
         Gson gson = new Gson();
         JsonObject userData = gson.fromJson(response.toString(), JsonObject.class);
 
-
-//        JsonObject userData = JsonParser.parseString(response.toString()).getAsJsonObject();
+        if(Objects.equals(userData.get("data").toString(), "[]"))
+            return null;
         return userData.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
     }
 
