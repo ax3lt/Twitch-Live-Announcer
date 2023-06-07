@@ -2,7 +2,6 @@ package it.ax3lt.Utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
