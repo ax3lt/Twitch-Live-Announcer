@@ -23,6 +23,7 @@ public class MessagesConfigUtils {
             }
         }
         config = YamlConfiguration.loadConfiguration(messagesFile);
+        config.options().copyDefaults(true);
     }
 
     public static void save() {

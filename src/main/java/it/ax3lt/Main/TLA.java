@@ -10,8 +10,12 @@ import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Utils.UpdateChecker;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -29,7 +33,10 @@ public final class TLA extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) { // Check if PlaceholderAPI is installed
             new PlaceHolderManager().register();
         }
+
+        getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+
         MessagesConfigUtils.setup();
 
         if(getConfig().getBoolean("bstats-enabled"))

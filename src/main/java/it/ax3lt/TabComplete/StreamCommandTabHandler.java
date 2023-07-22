@@ -30,7 +30,7 @@ public class StreamCommandTabHandler implements TabCompleter {
             return List.of("reload", "forceCheck", "link", "channels");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("link")) { // /stream link
-            return List.of("add", "remove", "list");
+            return List.of("add", "remove", "clear", "list");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("channels")) { // /stream channels
             return List.of("add", "remove", "list");
@@ -42,6 +42,9 @@ public class StreamCommandTabHandler implements TabCompleter {
                 return List.of("<mcname>");
             if(args.length == 4)
                 return List.of("<twitchname>");
+        }
+        if(args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("clear")) {
+            return List.of("<mcname>");
         }
         if (args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("remove")) {
             return new RemoveLinkTabComplete().onTabComplete(sender, command, label, args);
