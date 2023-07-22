@@ -31,6 +31,7 @@ public class ClearLinkCommand implements CommandExecutor {
 
         TLA.getInstance().getConfig().set("linked_users." + mcName, null);
         TLA.getInstance().saveConfig();
+        TLA.getInstance().reloadConfig();
         sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-cleared").replace("%player%", mcName)));
         return true;
     }

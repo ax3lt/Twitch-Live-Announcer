@@ -20,7 +20,7 @@ public class ListLinkCommand implements CommandExecutor {
 
         ConfigurationSection linkedUsers = TLA.getInstance().getConfig().getConfigurationSection("linked_users");
         if (linkedUsers == null || linkedUsers.getKeys(false).size() == 0) {
-            sender.sendMessage(MessagesConfigUtils.getString("no-linked-users"));
+            sender.sendMessage(MessagesConfigUtils.getString("link-list-empty"));
             return true;
         }
 
