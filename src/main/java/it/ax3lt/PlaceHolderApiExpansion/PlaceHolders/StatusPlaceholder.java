@@ -45,7 +45,7 @@ public class StatusPlaceholder extends PlaceholderExpansion {
                 }
             }
         }
-        return ConfigUtils.getConfigString("link-inexistent");
+        return MessagesConfigUtils.getString("link_inexistent");
     }
 
     @Override

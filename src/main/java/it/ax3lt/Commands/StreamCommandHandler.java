@@ -4,6 +4,7 @@ import it.ax3lt.Commands.Channels.AddChannelCommand;
 import it.ax3lt.Commands.Channels.ListChannelCommand;
 import it.ax3lt.Commands.Channels.RemoveChannelCommand;
 import it.ax3lt.Commands.Global.ForceCheckCommand;
+import it.ax3lt.Commands.Global.ListStatus;
 import it.ax3lt.Commands.Global.ReloadCommand;
 import it.ax3lt.Commands.Link.AddLinkCommand;
 import it.ax3lt.Commands.Link.ClearLinkCommand;
@@ -19,9 +20,11 @@ public class StreamCommandHandler implements CommandExecutor {
     // /stream
     // reload
     // forceUpdate
+    // list
     // link
     //      add
     //      remove
+    //      clear
     //      list
     // channels
     //      add
@@ -44,6 +47,10 @@ public class StreamCommandHandler implements CommandExecutor {
         // Force update
         else if(args.length == 1 && args[0].equalsIgnoreCase("forceCheck"))
             new ForceCheckCommand().onCommand(sender, command, label, args);
+
+        // List
+        else if (args.length == 1 && args[0].equalsIgnoreCase("list"))
+            new ListStatus().onCommand(sender, command, label, args);
 
             // Link
         else if (args.length >= 2 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("add"))

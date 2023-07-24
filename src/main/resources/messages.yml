@@ -3,6 +3,10 @@ now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8] %
 not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore %link%'
 url-text: '&8[&cWatch&8]'
 
+# List format
+list-header: '%prefix% &7Streamers:'
+list-format: '&8- &7%channel% %status%'
+
 # Link messages
 link-made: '%prefix% &8» &7You linked &l%channel%&7 to &l%player%'
 link-already-made: '%prefix% &8» &7You already linked that user with &l%channel%'

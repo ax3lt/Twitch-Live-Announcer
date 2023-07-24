@@ -14,9 +14,9 @@ public class StreamCommandTabHandler implements TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        // /stream reload
-        // /stream
         // reload
+        // forceCheck
+        // list
         // link
         //      add <mcname> <twitchname>
         //      remove <mcname> <twitchname>
@@ -27,7 +27,7 @@ public class StreamCommandTabHandler implements TabCompleter {
         //      list
 
         if (args.length == 1) { // /stream
-            return List.of("reload", "forceCheck", "link", "channels");
+            return List.of("reload", "forceCheck", "list", "link", "channels");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("link")) { // /stream link
             return List.of("add", "remove", "clear", "list");
