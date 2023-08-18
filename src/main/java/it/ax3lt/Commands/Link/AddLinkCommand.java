@@ -27,6 +27,15 @@ public class AddLinkCommand implements CommandExecutor {
 
         String mcName = args[2];
         String twitchName = args[3];
+        // Check if channel is in the list, if it isn't, add it
+        if (!TLA.getInstance().getConfig().getStringList("channels").contains(twitchName)) {
+            List<String> channels = TLA.getInstance().getConfig().getStringList("channels");
+            channels.add(twitchName);
+            TLA.getInstance().getConfig().set("channels", channels);
+            TLA.getInstance().saveConfig();
+            TLA.getInstance().reloadConfig();
+        }
+
         // Check if mcName and twitchName are already in the config
         List<String> linkedUsers = TLA.getInstance().getConfig().getStringList("linked_users." + mcName);
 
