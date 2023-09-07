@@ -1,5 +1,6 @@
 package it.ax3lt.Commands.Link;
 
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
@@ -18,17 +19,18 @@ public class ListLinkCommand implements CommandExecutor {
         if (!sender.hasPermission("twitchliveannouncer.link.list"))
             return true;
 
-        ConfigurationSection linkedUsers = TLA.getInstance().getConfig().getConfigurationSection("linked_users");
-        if (linkedUsers == null || linkedUsers.getKeys(false).size() == 0) {
+
+        Section linkedUsers = TLA.config.getSection("linked_users");;
+        if (linkedUsers == null || linkedUsers.getKeys().isEmpty()) {
             sender.sendMessage(MessagesConfigUtils.getString("link-list-empty"));
             return true;
         }
 
         sender.sendMessage(MessagesConfigUtils.getString("show-links-header"));
-        for (String key : linkedUsers.getKeys(false)) {
-            String playerName = key;
+        for (Object key : linkedUsers.getKeys()) {
+            String playerName = (String) key;
             StringBuilder channels = new StringBuilder();
-            List<String> linkedChannels = TLA.getInstance().getConfig().getStringList("linked_users." + key);
+            List<String> linkedChannels = TLA.config.getStringList("linked_users." + key);
             for (String channel : linkedChannels) {
                 channels.append(channel).append(", ");
             }

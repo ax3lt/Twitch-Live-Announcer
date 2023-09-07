@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,15 +24,19 @@ public class ClearLinkCommand implements CommandExecutor {
         }
 
         String mcName = args[2];
-        List<String> linkedUsers = TLA.getInstance().getConfig().getStringList("linked_users." + mcName);
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
         if (linkedUsers == null || linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-list-empty")));
             return true;
         }
 
-        TLA.getInstance().getConfig().set("linked_users." + mcName, null);
-        TLA.getInstance().saveConfig();
-        TLA.getInstance().reloadConfig();
+        TLA.config.set("linked_users." + mcName, null);
+        try {
+            TLA.config.save();
+            TLA.config.reload();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-cleared").replace("%player%", mcName)));
         return true;
     }

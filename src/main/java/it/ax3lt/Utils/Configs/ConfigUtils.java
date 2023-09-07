@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ConfigUtils {
     public static String getConfigString(String name) {
-        return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(Objects.requireNonNull(TLA.getInstance().getConfig().getString(name))
-                .replace("%prefix%", Objects.requireNonNull(TLA.getInstance().getConfig().getString("prefix")))));
+        return ChatColor.translateAlternateColorCodes('&', TLA.config.getString(name)
+                .replace("%prefix%", Objects.requireNonNull(TLA.config.getString("prefix"))));
     }
 }

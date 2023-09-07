@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class RemoveChannelCommand implements CommandExecutor {
             return true;
         }
 
-        List<String> channels = TLA.getInstance().getConfig().getStringList("channels");
+        List<String> channels = TLA.config.getStringList("channels");
         if (channels.contains(args[2])) {
             channels.remove(args[2]);
             sender.sendMessage(MessagesConfigUtils.getString("channel-removed")
@@ -31,9 +32,13 @@ public class RemoveChannelCommand implements CommandExecutor {
         } else
             sender.sendMessage(MessagesConfigUtils.getString("channel-not-added")
                     .replace("%channel%", args[2]));
-        TLA.getInstance().getConfig().set("channels", channels);
-        TLA.getInstance().saveConfig();
-        TLA.getInstance().reloadConfig();
+        TLA.config.set("channels", channels);
+        try {
+            TLA.config.save();
+            TLA.config.reload();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 }

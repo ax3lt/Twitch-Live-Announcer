@@ -1,3 +1,6 @@
+# !!! DO NOT TOUCH THIS !!!
+config-version: 1
+
 prefix: '&8[&cTwitch&8]'
 reload_time: 60
 
@@ -14,12 +17,7 @@ channels:
 # Twitch to Minecraft username linking (you can add and remove them via commands)
 # Format:
 # minecraft_username: twitch_username
-linked_users:
-  Notch:
-    - notch
-  Dinnerbone:
-    - dinnerbone
-    - dinnerbone2
+linked_users: []
 
 # Commands to execute when a streamer starts/stops streaming
 commands:

@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,16 +29,20 @@ public class AddLinkCommand implements CommandExecutor {
         String mcName = args[2];
         String twitchName = args[3];
         // Check if channel is in the list, if it isn't, add it
-        if (!TLA.getInstance().getConfig().getStringList("channels").contains(twitchName)) {
-            List<String> channels = TLA.getInstance().getConfig().getStringList("channels");
+        if (!TLA.config.getStringList("channels").contains(twitchName)) {
+            List<String> channels = TLA.config.getStringList("channels");
             channels.add(twitchName);
-            TLA.getInstance().getConfig().set("channels", channels);
-            TLA.getInstance().saveConfig();
-            TLA.getInstance().reloadConfig();
+            TLA.config.set("channels", channels);
+            try {
+                TLA.config.save();
+                TLA.config.reload();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         // Check if mcName and twitchName are already in the config
-        List<String> linkedUsers = TLA.getInstance().getConfig().getStringList("linked_users." + mcName);
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
 
         if (linkedUsers != null && !linkedUsers.isEmpty()) {
             for (String s : linkedUsers) {
@@ -52,9 +57,13 @@ public class AddLinkCommand implements CommandExecutor {
 
 
         linkedUsers.add(twitchName);
-        TLA.getInstance().getConfig().set("linked_users." + mcName, linkedUsers);
-        TLA.getInstance().saveConfig();
-        TLA.getInstance().reloadConfig();
+        TLA.config.set("linked_users." + mcName, linkedUsers);
+        try {
+            TLA.config.save();
+            TLA.config.reload();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-made"))
                 .replace("%channel%", twitchName)
                 .replace("%player%", mcName));

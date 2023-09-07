@@ -1,5 +1,11 @@
 package it.ax3lt.Main;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import it.ax3lt.Bstats.Metrics;
 import it.ax3lt.BungeeManager.MessageListener;
 import it.ax3lt.Commands.StreamCommandHandler;
@@ -17,16 +23,29 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Objects;
 
 
 public final class TLA extends JavaPlugin {
 
     public static boolean bungeeMode = false;
+    public static YamlDocument config;
+    public static YamlDocument messages;
     Metrics m;
 
     @Override
     public void onEnable() {
+
+        try {
+            config = YamlDocument.create(new File(getDataFolder(), "config.yml"), Objects.requireNonNull(getResource("config.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            messages = YamlDocument.create(new File(getDataFolder(), "messages.yml"), Objects.requireNonNull(getResource("messages.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("messages-version")).build());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
         Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler()); // Register tab completer for /stream command
         Objects.requireNonNull(getCommand("stream")).setExecutor(new StreamCommandHandler()); // Register command executor for /stream command
 
@@ -36,8 +55,6 @@ public final class TLA extends JavaPlugin {
 
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
-
-        MessagesConfigUtils.setup();
 
         if(getConfig().getBoolean("bstats-enabled"))
             m = new Metrics(this, 18430);

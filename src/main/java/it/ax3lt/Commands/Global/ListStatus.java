@@ -20,7 +20,7 @@ public class ListStatus implements CommandExecutor {
         if (!sender.hasPermission("twitchliveannouncer.list"))
             return true;
         sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("list-header")));
-        List<String> channels = TLA.getInstance().getConfig().getStringList("channels");
+        List<String> channels = TLA.config.getStringList("channels");
         for (String channel : channels) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("list-format"))
                     .replace("%channel%", channel)

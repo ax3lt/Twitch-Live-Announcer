@@ -17,7 +17,7 @@ public class ListChannelCommand implements CommandExecutor {
         if (!sender.hasPermission("twitchliveannouncer.channels.list"))
             return true;
 
-        List<String> channels = TLA.getInstance().getConfig().getStringList("channels");
+        List<String> channels = TLA.config.getStringList("channels");
         if (channels.isEmpty())
             sender.sendMessage(MessagesConfigUtils.getString("channel-list-empty"));
         else {

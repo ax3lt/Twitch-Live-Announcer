@@ -20,10 +20,10 @@ public class ForceCheckCommand implements CommandExecutor {
         try {
             StreamUtils.refresh();
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("force_refresh_success"))
-                .replace("%prefix%", Objects.requireNonNull(TLA.getInstance().getConfig().getString("prefix"))));
+                .replace("%prefix%", Objects.requireNonNull(TLA.config.getString("prefix"))));
         } catch (IOException e) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("force_refresh_error"))
-                .replace("%prefix%", Objects.requireNonNull(TLA.getInstance().getConfig().getString("prefix"))));
+                .replace("%prefix%", Objects.requireNonNull(TLA.config.getString("prefix"))));
             throw new RuntimeException(e);
         }
         return true;

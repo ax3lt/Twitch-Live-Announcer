@@ -13,7 +13,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
 
-        if (!TLA.getInstance().getConfig().getBoolean("placeholders.enabled"))
+        if (!TLA.config.getBoolean("placeholders.enabled"))
             return null;
 
         if (params.startsWith("status")) {

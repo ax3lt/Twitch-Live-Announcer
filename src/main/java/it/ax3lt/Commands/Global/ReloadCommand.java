@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class ReloadCommand implements CommandExecutor {
@@ -15,10 +16,14 @@ public class ReloadCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("twitchliveannouncer.reload"))
             return true;
-        TLA.getInstance().reloadConfig();
-        MessagesConfigUtils.reload();
+        try {
+            TLA.config.reload();
+            TLA.messages.reload();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("reload_config"))
-                .replace("%prefix%", Objects.requireNonNull(TLA.getInstance().getConfig().getString("prefix"))));
+                .replace("%prefix%", Objects.requireNonNull(TLA.config.getString("prefix"))));
         return true;
     }
 }

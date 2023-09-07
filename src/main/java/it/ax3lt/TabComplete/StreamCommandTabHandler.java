@@ -55,7 +55,7 @@ public class StreamCommandTabHandler implements TabCompleter {
             return List.of("<twitchChannel>");
         }
         if (args.length == 3 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("remove")) { // /stream channels remove (list of channels)
-            return TLA.getInstance().getConfig().getStringList("channels");
+            return TLA.config.getStringList("channels");
         }
 
         return null;

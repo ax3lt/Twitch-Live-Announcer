@@ -7,13 +7,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
 public class RemoveLinkCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!sender.hasPermission("twitchliveannouncer.link.remove"))
+        if (!sender.hasPermission("twitchliveannouncer.link.remove"))
             return true;
 
         if (args.length <= 3) {
@@ -24,7 +25,7 @@ public class RemoveLinkCommand implements CommandExecutor {
         String mcName = args[2];
         String twitchName = args[3];
         // Check if mcName and twitchName are in the config
-        List<String> linkedUsers = TLA.getInstance().getConfig().getStringList("linked_users." + mcName);
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
         if (linkedUsers == null || linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-not-made"))
                     .replace("%channel%", twitchName)
@@ -35,12 +36,16 @@ public class RemoveLinkCommand implements CommandExecutor {
         for (String s : linkedUsers) {
             if (s.equalsIgnoreCase(twitchName)) {
                 linkedUsers.remove(s);
-                if(linkedUsers.isEmpty())
-                    TLA.getInstance().getConfig().set("linked_users." + mcName, null);
+                if (linkedUsers.isEmpty())
+                    TLA.config.set("linked_users." + mcName, null);
                 else
-                    TLA.getInstance().getConfig().set("linked_users." + mcName, linkedUsers);
-                TLA.getInstance().saveConfig();
-                TLA.getInstance().reloadConfig();
+                    TLA.config.set("linked_users." + mcName, linkedUsers);
+                try {
+                    TLA.config.save();
+                    TLA.config.reload();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-removed"))
                         .replace("%channel%", twitchName)
                         .replace("%player%", mcName));

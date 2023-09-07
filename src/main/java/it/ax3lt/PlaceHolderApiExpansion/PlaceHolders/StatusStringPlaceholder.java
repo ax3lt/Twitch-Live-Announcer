@@ -1,5 +1,6 @@
 package it.ax3lt.PlaceHolderApiExpansion.PlaceHolders;
 
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
@@ -26,7 +27,7 @@ public class StatusStringPlaceholder extends PlaceholderExpansion {
         if (split.length == 3) {
             String username = split[2];
             // Check in config file if the user is linked
-            ConfigurationSection linked_users = TLA.getInstance().getConfig().getConfigurationSection("linked_users");
+            Section linked_users = TLA.config.getSection("linked_users");
             if (linked_users != null) {
                 if (linked_users.contains(username)) {
                     // Check if the user is online
