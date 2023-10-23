@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class ConfigUtils {
+public class ConfigUtils { // Test
     public static String getConfigString(String name) {
         return ChatColor.translateAlternateColorCodes('&', TLA.config.getString(name)
                 .replace("%prefix%", Objects.requireNonNull(TLA.config.getString("prefix"))));
