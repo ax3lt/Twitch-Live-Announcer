@@ -15,7 +15,6 @@ import java.util.Objects;
 public class StreamUtils {
     public static HashMap<String, String> streams = new HashMap<>();
     private static String client_id;
-    private static String client_secret;
     private static String token;
 
     static TLA plugin;
@@ -23,14 +22,14 @@ public class StreamUtils {
 
     public static void configureParameters() throws IOException {
         client_id = ConfigUtils.getConfigString("client_id");
-        client_secret = ConfigUtils.getConfigString("client_secret");
+        String client_secret = ConfigUtils.getConfigString("client_secret");
         token = TwitchApi.getToken(client_id, client_secret);
         plugin = TLA.getInstance();
     }
 
     public static void refresh() throws IOException {
         Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            List<String> channels = plugin.getConfig().getStringList("channels");
+            List<String> channels = TLA.config.getStringList("channels");
 
             for (String channel : channels) {
                 String userId = null;
@@ -53,11 +52,11 @@ public class StreamUtils {
                 }
 
                 // Check stream status
-                if (streamInfo.get("data").getAsJsonArray().size() == 0) {
+                if (streamInfo.get("data").getAsJsonArray().isEmpty()) {
                     // Stream is offline
                     if (streams.containsKey(channel)) {
                         streams.remove(channel);
-                        if (!plugin.getConfig().getBoolean("disable-not-streaming-message")) {
+                        if (!TLA.config.getBoolean("disable-not-streaming-message")) {
 
                             MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
@@ -65,8 +64,8 @@ public class StreamUtils {
                         }
 
                         //Execute custom command
-                        if (plugin.getConfig().getBoolean("commands.enabled")) {
-                            List<String> commands = plugin.getConfig().getStringList("commands.stop");
+                        if (TLA.config.getBoolean("commands.enabled")) {
+                            List<String> commands = TLA.config.getStringList("commands.stop");
                             Bukkit.getScheduler().runTask(plugin, () -> {
                                 for (String command : commands) {
                                     plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -82,16 +81,16 @@ public class StreamUtils {
                     String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString();
 
 
-                    if (plugin.getConfig().getBoolean("filter-stream-type.enabled") && plugin.getConfig().getStringList("filter-stream-type.games").stream().noneMatch(streamGameName::contains))
+                    if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games").stream().noneMatch(streamGameName::contains))
                         return;
-                    if (plugin.getConfig().getBoolean("filter-stream-title.enabled") && plugin.getConfig().getStringList("filter-stream-title.text").stream().noneMatch(streamTitle::contains))
+                    if (TLA.config.getBoolean("filter-stream-title.enabled") && TLA.config.getStringList("filter-stream-title.text").stream().noneMatch(streamTitle::contains))
                         return;
 
                     String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                     if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
                         streams.put(channel, streamId);
 
-                        if (!plugin.getConfig().getBoolean("disable-streaming-message")) {
+                        if (!TLA.config.getBoolean("disable-streaming-message")) {
                             MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
                                             .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                             .replace("%channel%", channel)
@@ -101,8 +100,8 @@ public class StreamUtils {
 
                         }
                         //Execute custom command
-                        if (plugin.getConfig().getBoolean("commands.enabled")) {
-                            List<String> commands = plugin.getConfig().getStringList("commands.start");
+                        if (TLA.config.getBoolean("commands.enabled")) {
+                            List<String> commands = TLA.config.getStringList("commands.start");
                             Bukkit.getScheduler().runTask(plugin, () -> {
                                 for (String command : commands) {
                                     plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
