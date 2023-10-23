@@ -32,7 +32,7 @@ public class StreamUtils {
             List<String> channels = TLA.config.getStringList("channels");
 
             for (String channel : channels) {
-                String userId = null;
+                String userId;
                 try {
                     userId = TwitchApi.getUserId(channel, token, client_id);
                     if(userId == null)
@@ -44,7 +44,7 @@ public class StreamUtils {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                JsonObject streamInfo = null;
+                JsonObject streamInfo;
                 try {
                     streamInfo = TwitchApi.getStreamInfo(userId, token, client_id);
                 } catch (IOException e) {
