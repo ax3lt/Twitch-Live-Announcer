@@ -1,0 +1,68 @@
+# !!! DO NOT TOUCH THIS !!!
+config-version: 1
+
+prefix: '&8[&cTwitch&8]'
+reload_time: 60
+
+# You can get your client_id and client_secret here: https://dev.twitch.tv/console/apps (Create an app)
+client_id: ''
+client_secret: ''
+
+check_updates: true
+
+# The list of channels you want to check
+channels:
+  - 'channel1'
+
+# Twitch to Minecraft username linking (you can add and remove them via commands)
+# Format:
+# minecraft_username: twitch_username
+linked_users: []
+
+# Commands to execute when a streamer starts/stops streaming
+commands:
+  enabled: false
+  start:
+    - 'tellraw @a {"text":"%channel% is now streaming","color":"gray"}'
+  stop:
+    - 'tellraw @a {"text":"%channel% is not streaming anymore","color":"gray"}'
+
+
+# This command will replace %player% with the linked player name and execute the command for EACH linked player
+# so if you have 3 linked players to a channel and the command is 'tellraw %player% {"text":"%channel% is now streaming","color":"gray"}'
+# it will execute the command 3 times with %player% replaced with each linked player name
+# This will be executed every reload_time seconds
+timedCommands:
+ enabled: false
+ live:
+   - 'give %player% minecraft:diamond 1'
+ offline:
+   - 'give %player% minecraft:redstone 1'
+
+
+# Filter for specific game types
+filter-stream-type:
+  enabled: false
+  games:
+    - 'Minecraft'
+
+# Check if the stream title contains a specific string (case-sensitive)
+filter-stream-title:
+  enabled: false
+  text:
+    - 'Minecraft server!'
+
+# Placeholders (requires PlaceholderAPI)
+placeholders:
+  enabled: true
+  live: '&c[Live]'
+  offline: '&7[Offline]'
+
+# Bungee mode !! Requires restart to apply changes !!
+bungee:
+  enabled: false
+
+disable-streaming-message: false
+disable-not-streaming-message: false
+
+bstats-enabled: true
