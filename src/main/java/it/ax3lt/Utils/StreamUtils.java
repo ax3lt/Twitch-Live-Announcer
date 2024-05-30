@@ -78,14 +78,20 @@ public class StreamUtils {
                     }
                 } else {
                     // Stream is online
-                    String streamGameName = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("game_name").getAsString();
-                    String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString();
+                    String streamGameName = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("game_name").getAsString().toLowerCase();
+                    String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString().toLowerCase();
 
+                    if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games").stream()
+                            .map(String::toLowerCase)
+                            .noneMatch(streamGameName::contains)) {
+                        return;
+                    }
+                    if (TLA.config.getBoolean("filter-stream-title.enabled") && TLA.config.getStringList("filter-stream-title.text").stream()
+                            .map(String::toLowerCase)
+                            .noneMatch(streamTitle::contains)) {
+                        return;
+                    }
 
-                    if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games").stream().noneMatch(streamGameName::contains))
-                        return;
-                    if (TLA.config.getBoolean("filter-stream-title.enabled") && TLA.config.getStringList("filter-stream-title.text").stream().noneMatch(streamTitle::contains))
-                        return;
 
                     // Execute customPlayer command
                     if (TLA.config.getBoolean("timedCommands.enabled")) {
@@ -101,7 +107,7 @@ public class StreamUtils {
                                 }
                             });
                         });
-                    } 
+                    }
 
                     String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                     if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
@@ -146,7 +152,7 @@ public class StreamUtils {
             }
             List<String> onlinePlayers = new ArrayList<>();
             plugin.getServer().getOnlinePlayers().forEach(player -> {
-                if(linkedUsers.contains(player.getName()))
+                if (linkedUsers.contains(player.getName()))
                     onlinePlayers.add(player.getName());
             });
             return onlinePlayers;
