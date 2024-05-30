@@ -19,6 +19,7 @@ link-cleared: '%prefix% &8» &7You cleared all the links of &l%player%'
 link-list-empty: '%prefix% &8» &7The list is empty'
 show-links-header: '%prefix% &7Linked users:'
 show-links-format: '&8- &7%player% &8» &7%channels%'
+already-have-a-link: '%prefix% &8» &7You are already linked with a channel'
 
 # Channel messages
 channel-already-added: '%prefix% &8» &7You already added &l%channel%&7 to the list'

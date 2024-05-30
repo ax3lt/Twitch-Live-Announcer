@@ -44,6 +44,15 @@ public class AddLinkCommand implements CommandExecutor {
         // Check if mcName and twitchName are already in the config
         List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
 
+
+
+        // Check if the player already has a link (twitchliveannouncer.link.multiple can bypass)
+        if(!sender.hasPermission("twitchliveannouncer.link.multiple") && !linkedUsers.isEmpty()) {
+            sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("already-have-a-link")));
+            return true;
+        }
+
+        // Check if the link is already made
         if (linkedUsers != null && !linkedUsers.isEmpty()) {
             for (String s : linkedUsers) {
                 if (s.equalsIgnoreCase(twitchName)) {

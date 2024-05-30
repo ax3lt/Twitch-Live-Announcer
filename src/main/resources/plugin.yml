@@ -31,6 +31,9 @@ permissions:
   twitchliveannouncer.link.list:
     description: List all linked users
     default: op
+  twitchliveannouncer.link.multiple:
+    description: Link multiple channels to a player
+    default: op
   twitchliveannouncer.channels.add:
     description: Add a channel to the list of channels to check
     default: op
