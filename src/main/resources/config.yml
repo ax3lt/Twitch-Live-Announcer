@@ -40,13 +40,13 @@ timedCommands:
    - 'give %player% minecraft:redstone 1'
 
 
-# Filter for specific game types
+# Filter for specific game types (case-insensitive)
 filter-stream-type:
   enabled: false
   games:
     - 'Minecraft'
 
-# Check if the stream title contains a specific string (case-sensitive)
+# Check if the stream title contains a specific string (case-insensitive)
 filter-stream-title:
   enabled: false
   text:
