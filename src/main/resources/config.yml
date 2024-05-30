@@ -31,7 +31,7 @@ commands:
 # This command will replace %player% with the linked player name and execute the command for EACH linked player
 # so if you have 3 linked players to a channel and the command is 'tellraw %player% {"text":"%channel% is now streaming","color":"gray"}'
 # it will execute the command 3 times with %player% replaced with each linked player name
-# This will be executed every reload_time seconds
+# This will be executed every reload_time seconds, and ONLY to the linked players that are online
 timedCommands:
  enabled: false
  live:
