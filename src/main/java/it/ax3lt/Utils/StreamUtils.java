@@ -101,7 +101,7 @@ public class StreamUtils {
                                 }
                             });
                         });
-                    }
+                    } 
 
                     String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                     if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
