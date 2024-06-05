@@ -1,5 +1,6 @@
 package it.ax3lt.Commands.Link;
 
+import dev.dejvokep.boostedyaml.route.Route;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
@@ -42,8 +43,8 @@ public class AddLinkCommand implements CommandExecutor {
         }
 
         // Check if mcName and twitchName are already in the config
-        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
-
+//        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
+        List<String> linkedUsers = ConfigUtils.getLinkedUserStringList(mcName);
 
 
         // Check if the player already has a link (twitchliveannouncer.link.multiple can bypass)
@@ -66,7 +67,10 @@ public class AddLinkCommand implements CommandExecutor {
 
 
         linkedUsers.add(twitchName);
-        TLA.config.set("linked_users." + mcName, linkedUsers);
+//        TLA.config.set("linked_users." + mcName, linkedUsers);
+        ConfigUtils.setLinkedUserStringList(mcName, linkedUsers);
+
+
         try {
             TLA.config.save();
             TLA.config.reload();

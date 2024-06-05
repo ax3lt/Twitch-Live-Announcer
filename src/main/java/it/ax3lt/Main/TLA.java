@@ -16,14 +16,10 @@ import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Utils.UpdateChecker;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.Objects;
 
 
@@ -45,7 +41,6 @@ public final class TLA extends JavaPlugin {
         }
 
 
-
         Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler()); // Register tab completer for /stream command
         Objects.requireNonNull(getCommand("stream")).setExecutor(new StreamCommandHandler()); // Register command executor for /stream command
 
@@ -56,12 +51,11 @@ public final class TLA extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
 
-        if(getConfig().getBoolean("bstats-enabled"))
+        if (getConfig().getBoolean("bstats-enabled"))
             m = new Metrics(this, 18430);
 
-        if(getConfig().getBoolean("check_updates"))
+        if (getConfig().getBoolean("check_updates"))
             new UpdateChecker().checkUpdate();
-
 
 
         // Register BungeeCord channel

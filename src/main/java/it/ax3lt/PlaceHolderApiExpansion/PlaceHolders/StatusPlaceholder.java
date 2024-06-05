@@ -32,9 +32,9 @@ public class StatusPlaceholder extends PlaceholderExpansion {
         // Check in config file if the user is linked
         Section linked_users = TLA.config.getSection("linked_users");
         if (linked_users != null) {
-            if (linked_users.contains(username)) {
+            if (linked_users.contains(ConfigUtils.encodeUsername(username))) {
                 // Check if the user is online
-                List<String> streams = linked_users.getStringList(username);
+                List<String> streams = linked_users.getStringList(ConfigUtils.encodeUsername(username)); // TODO vedere se va
                 if (streams != null && !streams.isEmpty()) {
                     for (String s : streams) {
                         if (StreamUtils.streams.get(s) != null) {

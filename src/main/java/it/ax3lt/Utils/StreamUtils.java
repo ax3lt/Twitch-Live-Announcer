@@ -145,7 +145,7 @@ public class StreamUtils {
 
         if (linkedUsersSection != null) {
             for (Object key : linkedUsersSection.getKeys()) {
-                List<String> linkedChannels = TLA.config.getStringList("linked_users." + key);
+                List<String> linkedChannels = ConfigUtils.getLinkedUserStringList((String) key);
                 if (linkedChannels.contains(channel)) {
                     linkedUsers.add(key.toString());
                 }

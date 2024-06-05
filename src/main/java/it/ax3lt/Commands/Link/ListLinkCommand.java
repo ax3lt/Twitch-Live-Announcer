@@ -2,6 +2,7 @@ package it.ax3lt.Commands.Link;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,7 +31,7 @@ public class ListLinkCommand implements CommandExecutor {
         for (Object key : linkedUsers.getKeys()) {
             String playerName = (String) key;
             StringBuilder channels = new StringBuilder();
-            List<String> linkedChannels = TLA.config.getStringList("linked_users." + key);
+            List<String> linkedChannels = ConfigUtils.getLinkedUserStringList(playerName);
             for (String channel : linkedChannels) {
                 channels.append(channel).append(", ");
             }
@@ -39,7 +40,7 @@ public class ListLinkCommand implements CommandExecutor {
                 continue;
 
             sender.sendMessage(MessagesConfigUtils.getString("show-links-format")
-                    .replace("%player%", playerName)
+                    .replace("%player%", ConfigUtils.decodeUsername(playerName))
                     .replace("%channels%", channels.substring(0, channels.toString().length() - 2)));
         }
         return true;

@@ -1,6 +1,7 @@
 package it.ax3lt.Commands.Link;
 
 import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +26,7 @@ public class RemoveLinkCommand implements CommandExecutor {
         String mcName = args[2];
         String twitchName = args[3];
         // Check if mcName and twitchName are in the config
-        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
+        List<String> linkedUsers = ConfigUtils.getLinkedUserStringList(mcName);
         if (linkedUsers == null || linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-not-made"))
                     .replace("%channel%", twitchName)
@@ -37,9 +38,9 @@ public class RemoveLinkCommand implements CommandExecutor {
             if (s.equalsIgnoreCase(twitchName)) {
                 linkedUsers.remove(s);
                 if (linkedUsers.isEmpty())
-                    TLA.config.set("linked_users." + mcName, null);
+                    ConfigUtils.setLinkedUserStringList(mcName, null);
                 else
-                    TLA.config.set("linked_users." + mcName, linkedUsers);
+                    ConfigUtils.setLinkedUserStringList(mcName, linkedUsers);
                 try {
                     TLA.config.save();
                     TLA.config.reload();

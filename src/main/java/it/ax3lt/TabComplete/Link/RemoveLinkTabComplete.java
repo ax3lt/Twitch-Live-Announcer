@@ -2,6 +2,7 @@ package it.ax3lt.TabComplete.Link;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
+import it.ax3lt.Utils.Configs.ConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,7 +28,7 @@ public class RemoveLinkTabComplete {
             Section linkedUsers = TLA.config.getSection("linked_users");
             if (linkedUsers != null) {
                 for (Object key : linkedUsers.getKeys()) {
-                    players.add((String) key);
+                    players.add(ConfigUtils.decodeUsername((String) key));
                 }
             }
 
@@ -37,7 +38,7 @@ public class RemoveLinkTabComplete {
             return players;
         } else if (args.length == 4) { // /stream link remove <mcname>
             //                                                    ↑
-            List<String> players = TLA.config.getStringList("linked_users." + args[2]);
+            List<String> players = ConfigUtils.getLinkedUserStringList(args[2]);
 
             if (players == null) {
                 return Collections.singletonList("Empty list");
