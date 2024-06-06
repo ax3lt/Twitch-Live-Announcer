@@ -31,6 +31,7 @@ public class StreamUtils {
     }
 
     public static void refresh() throws IOException {
+        getLinkedUser("twitch_ax3lt");
         Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             List<String> channels = TLA.config.getStringList("channels");
 
@@ -147,7 +148,7 @@ public class StreamUtils {
             for (Object key : linkedUsersSection.getKeys()) {
                 List<String> linkedChannels = ConfigUtils.getLinkedUserStringList((String) key);
                 if (linkedChannels.contains(channel)) {
-                    linkedUsers.add(key.toString());
+                    linkedUsers.add(ConfigUtils.decodeUsername(key.toString()));
                 }
             }
             List<String> onlinePlayers = new ArrayList<>();
