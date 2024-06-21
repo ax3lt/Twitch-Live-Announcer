@@ -31,7 +31,6 @@ public class StreamUtils {
     }
 
     public static void refresh() throws IOException {
-        getLinkedUser("twitch_ax3lt");
         Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             List<String> channels = TLA.config.getStringList("channels");
 
