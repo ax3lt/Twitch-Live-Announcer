@@ -6,7 +6,6 @@ import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.IOException;
 import java.util.ArrayList;
