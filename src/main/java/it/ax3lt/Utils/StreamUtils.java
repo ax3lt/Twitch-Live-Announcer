@@ -119,6 +119,17 @@ public class StreamUtils {
                                             .replace("%channel%", channel)
                                             .replace("%title%", streamTitle)
                                     , channel);
+                            // multipleStreamService:
+                            //  enabled: false
+                            //  # Available services: 'multistream', 'multitwitch'
+                            //  type: 'multistream'
+                            //  # The URL of the service
+                            //  configuration: '/%channels%/layout0'
+
+                            if (TLA.config.getBoolean("multipleStreamService.enabled")) {
+                                MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("multi-stream"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))), "");
+                            }
                         }
 
                         //Execute custom command

@@ -19,6 +19,14 @@ channels:
 # minecraft_username: twitch_username
 linked_users: []
 
+# Additional multi stream message
+multipleStreamService:
+  enabled: false
+  # Available services: 'multistream', 'multitwitch'
+  type: 'multistream'
+  # The URL of the service
+  configuration: '/%channels%/layout0'
+
 # Commands to execute when a streamer starts/stops streaming
 commands:
   enabled: false
