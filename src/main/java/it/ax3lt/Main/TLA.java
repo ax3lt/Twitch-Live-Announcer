@@ -13,10 +13,12 @@ import it.ax3lt.PlaceHolderApiExpansion.PlaceHolderManager;
 import it.ax3lt.TabComplete.StreamCommandTabHandler;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
+import it.ax3lt.Utils.MessageUtils;
 import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,6 +89,19 @@ public final class TLA extends JavaPlugin {
                 );
             }
         }, 0L, getConfig().getLong("reload_time") * 20L);
+
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (getConfig().getBoolean("multipleStreamService.enabled")) {
+                    if (!StreamUtils.streams.isEmpty()) {
+                        MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("multi-stream"))
+                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))), "");
+                    }
+                }
+            }
+        }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("multipleStreamService.broadcastTime") * 20L);
     }
 
     @Override

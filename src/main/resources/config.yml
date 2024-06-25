@@ -22,9 +22,10 @@ linked_users: []
 # Additional multi stream message
 multipleStreamService:
   enabled: false
+  broadcastTime: 60
   # Available services: 'multistream', 'multitwitch'
   type: 'multistream'
-  # The URL of the service
+  # The URL to the service
   configuration: '/%channels%/layout0'
 
 # Commands to execute when a streamer starts/stops streaming

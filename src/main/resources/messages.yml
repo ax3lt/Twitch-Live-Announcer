@@ -6,7 +6,7 @@ now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8] %
 not_streaming: '%prefix% &8» &7%channel% &7is not streaming anymore %link%'
 url-text: '&8[&cChannel&8]'
 multi-stream: '%prefix% &8» &7Watch all currently streaming channels: &c%multistream%'
-multi-url-text: '&8[&cWatch&8]'
+multi-url-text: '&8[&cClick&8]'
 
 # List format
 list-header: '%prefix% &7Streamers:'
