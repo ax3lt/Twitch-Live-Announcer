@@ -14,6 +14,7 @@ import it.ax3lt.TabComplete.StreamCommandTabHandler;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import it.ax3lt.Utils.MessageUtils;
+import it.ax3lt.Utils.MysqlConnection;
 import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Utils.UpdateChecker;
 import org.bukkit.Bukkit;
@@ -34,7 +35,6 @@ public final class TLA extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         try {
             config = YamlDocument.create(new File(getDataFolder(), "config.yml"), Objects.requireNonNull(getResource("config.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
             messages = YamlDocument.create(new File(getDataFolder(), "messages.yml"), Objects.requireNonNull(getResource("messages.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("messages-version")).build());
@@ -58,6 +58,11 @@ public final class TLA extends JavaPlugin {
 
         if (getConfig().getBoolean("check_updates"))
             new UpdateChecker().checkUpdate();
+
+        if(getConfig().getBoolean("mysql.enabled")) {
+            MysqlConnection.load();
+            MysqlConnection.connect();
+        }
 
 
         // Register BungeeCord channel

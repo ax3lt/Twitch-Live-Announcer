@@ -3,14 +3,13 @@ package it.ax3lt.TabComplete.Link;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class RemoveLinkTabComplete {
 
@@ -28,17 +27,27 @@ public class RemoveLinkTabComplete {
             Section linkedUsers = TLA.config.getSection("linked_users");
             if (linkedUsers != null) {
                 for (Object key : linkedUsers.getKeys()) {
-                    players.add(ConfigUtils.decodeUsername((String) key));
+                    UUID uuid = UUID.fromString((String) key);
+                    String playerName = "";
+                    try {
+                        playerName = Objects.requireNonNull(Bukkit.getPlayer((uuid))).getName();
+                    } catch (Exception e) {
+                        playerName = "Unknown";
+                    }
+
+                    players.add(playerName);
                 }
             }
 
-            if (players == null) {
+            if (players.isEmpty()) {
                 return Collections.singletonList("Empty list");
             }
             return players;
         } else if (args.length == 4) { // /stream link remove <mcname>
             //                                                    ↑
-            List<String> players = ConfigUtils.getLinkedUserStringList(args[2]);
+
+            UUID uuid = Bukkit.getOfflinePlayer(args[2]).getUniqueId();
+            List<String> players = TLA.config.getStringList("linked_users." + uuid.toString());
 
             if (players == null) {
                 return Collections.singletonList("Empty list");

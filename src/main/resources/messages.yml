@@ -55,3 +55,6 @@ update_available: '%prefix% &8» &7An update is available, download it here: &c%
 update_check_error: '%prefix% &8» &cError while checking for updates'
 invalid_channel: '%prefix% &8» &c%channel% is not a valid channel'
 invalidMultiStreamService: '%prefix% &8» &cInvalid multi stream service'
+successConnectingToDatabase: '%prefix% &8» &7Successfully connected to the database'
+errorConnectingToDatabase: '%prefix% &8» &cError connecting to the database: %error%'
+errorClosingDatabaseConnection: '%prefix% &8» &cError closing the database connection: %error%'

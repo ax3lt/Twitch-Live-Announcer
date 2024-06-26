@@ -28,6 +28,19 @@ multipleStreamService:
   # The URL to the service
   configuration: '/%channels%/layout0'
 
+
+# Store current streaming channels in a MYSQL database,
+# will be automatically updated when a streamer starts/stops streaming
+# Changes require a restart
+mysql:
+  enabled: false
+  host: 'localhost'
+  port: 3306
+  database: 'twitch'
+  username: 'root'
+  password: ''
+  table: 'twitch_channels'
+
 # Commands to execute when a streamer starts/stops streaming
 commands:
   enabled: false
@@ -45,8 +58,6 @@ timedCommands:
  enabled: false
  live:
    - 'give %player% minecraft:diamond 1'
- offline:
-   - 'give %player% minecraft:redstone 1'
 
 
 # Filter for specific game types (case-insensitive)
@@ -67,7 +78,7 @@ placeholders:
   live: '&c[Live]'
   offline: '&7[Offline]'
 
-# Bungee mode !! Requires restart to apply changes !!
+# Bungee mode (broacast message to all servers) !! Requires restart to apply changes !!
 bungee:
   enabled: false
 

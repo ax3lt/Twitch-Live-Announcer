@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.route.Route;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class AddLinkCommand implements CommandExecutor {
     @Override
@@ -28,6 +30,7 @@ public class AddLinkCommand implements CommandExecutor {
 
 
         String mcName = args[2];
+        UUID playerUUID = Bukkit.getOfflinePlayer(mcName).getUniqueId();
         String twitchName = args[3];
         // Check if channel is in the list, if it isn't, add it
         if (!TLA.config.getStringList("channels").contains(twitchName)) {
@@ -44,7 +47,7 @@ public class AddLinkCommand implements CommandExecutor {
 
         // Check if mcName and twitchName are already in the config
 //        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
-        List<String> linkedUsers = ConfigUtils.getLinkedUserStringList(mcName);
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + String.valueOf(playerUUID));
 
 
         // Check if the player already has a link (twitchliveannouncer.link.multiple can bypass)
@@ -67,8 +70,7 @@ public class AddLinkCommand implements CommandExecutor {
 
 
         linkedUsers.add(twitchName);
-//        TLA.config.set("linked_users." + mcName, linkedUsers);
-        ConfigUtils.setLinkedUserStringList(mcName, linkedUsers);
+        TLA.config.set("linked_users." + playerUUID, linkedUsers);
 
 
         try {

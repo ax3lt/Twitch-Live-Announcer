@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class ListLinkCommand implements CommandExecutor {
     @Override
@@ -29,9 +32,16 @@ public class ListLinkCommand implements CommandExecutor {
 
         sender.sendMessage(MessagesConfigUtils.getString("show-links-header"));
         for (Object key : linkedUsers.getKeys()) {
-            String playerName = (String) key;
+            String playerUUID = (String) key;
+            String playerName = "";
+            try {
+                playerName = Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(playerUUID))).getName();
+            } catch (Exception e) {
+                playerName = "Unknown";
+            }
+
             StringBuilder channels = new StringBuilder();
-            List<String> linkedChannels = ConfigUtils.getLinkedUserStringList(playerName);
+            List<String> linkedChannels = TLA.config.getStringList("linked_users." + playerUUID);
             for (String channel : linkedChannels) {
                 channels.append(channel).append(", ");
             }
@@ -40,7 +50,7 @@ public class ListLinkCommand implements CommandExecutor {
                 continue;
 
             sender.sendMessage(MessagesConfigUtils.getString("show-links-format")
-                    .replace("%player%", ConfigUtils.decodeUsername(playerName))
+                    .replace("%player%", playerName)
                     .replace("%channels%", channels.substring(0, channels.toString().length() - 2)));
         }
         return true;

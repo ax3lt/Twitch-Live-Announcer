@@ -11,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.UUID;
 
 public class StatusPlaceholder extends PlaceholderExpansion {
     String identifier, author, version;
@@ -28,13 +29,14 @@ public class StatusPlaceholder extends PlaceholderExpansion {
         }
 
         String username = player.getName();
+        UUID playerUUID = player.getUniqueId();
 
         // Check in config file if the user is linked
         Section linked_users = TLA.config.getSection("linked_users");
         if (linked_users != null) {
-            if (linked_users.contains(ConfigUtils.encodeUsername(username))) {
+            if (linked_users.contains(playerUUID.toString())) {
                 // Check if the user is online
-                List<String> streams = linked_users.getStringList(ConfigUtils.encodeUsername(username)); // TODO vedere se va
+                List<String> streams = linked_users.getStringList(playerUUID.toString());
                 if (streams != null && !streams.isEmpty()) {
                     for (String s : streams) {
                         if (StreamUtils.streams.get(s) != null) {

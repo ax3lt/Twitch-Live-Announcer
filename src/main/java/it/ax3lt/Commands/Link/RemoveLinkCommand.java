@@ -3,6 +3,7 @@ package it.ax3lt.Commands.Link;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class RemoveLinkCommand implements CommandExecutor {
     @Override
@@ -24,9 +26,10 @@ public class RemoveLinkCommand implements CommandExecutor {
         }
 
         String mcName = args[2];
+        UUID playerUUID = Bukkit.getOfflinePlayer(mcName).getUniqueId();
         String twitchName = args[3];
         // Check if mcName and twitchName are in the config
-        List<String> linkedUsers = ConfigUtils.getLinkedUserStringList(mcName);
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + playerUUID.toString());
         if (linkedUsers == null || linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-not-made"))
                     .replace("%channel%", twitchName)
@@ -38,9 +41,9 @@ public class RemoveLinkCommand implements CommandExecutor {
             if (s.equalsIgnoreCase(twitchName)) {
                 linkedUsers.remove(s);
                 if (linkedUsers.isEmpty())
-                    ConfigUtils.setLinkedUserStringList(mcName, null);
+                    TLA.config.set("linked_users." + (playerUUID), null);
                 else
-                    ConfigUtils.setLinkedUserStringList(mcName, linkedUsers);
+                    TLA.config.set("linked_users." + (playerUUID), linkedUsers);
                 try {
                     TLA.config.save();
                     TLA.config.reload();

@@ -6,11 +6,13 @@ import it.ax3lt.Utils.StreamUtils;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.UUID;
 
 public class LivePlaceholder extends PlaceholderExpansion {
     String identifier, author, version;
@@ -26,12 +28,13 @@ public class LivePlaceholder extends PlaceholderExpansion {
         String[] split = params.split("_");
         if (split.length == 2) {
             String username = split[1];
+            UUID uuid = Bukkit.getOfflinePlayer(username).getUniqueId();
             // Check in config file if the user is linked
             Section linked_users = TLA.config.getSection("linked_users");
             if (linked_users != null) {
-                if (linked_users.contains(ConfigUtils.encodeUsername(username))) {
+                if (linked_users.contains(uuid.toString())) {
                     // Check if the user is online
-                    List<String> streams = linked_users.getStringList(ConfigUtils.encodeUsername(username)); // TODO Vedere se va
+                    List<String> streams = linked_users.getStringList(uuid.toString());
                     if (streams != null && !streams.isEmpty()) {
                         for (String s : streams) {
                             if (StreamUtils.streams.get(s) != null) {

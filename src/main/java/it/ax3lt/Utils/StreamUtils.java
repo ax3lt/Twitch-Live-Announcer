@@ -8,10 +8,7 @@ import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class StreamUtils {
@@ -144,9 +141,10 @@ public class StreamUtils {
 
         if (linkedUsersSection != null) {
             for (Object key : linkedUsersSection.getKeys()) {
-                List<String> linkedChannels = ConfigUtils.getLinkedUserStringList((String) key);
+                UUID uuid = UUID.fromString(key.toString());
+                List<String> linkedChannels = TLA.config.getStringList("linked_users." + uuid);
                 if (linkedChannels.contains(channel)) {
-                    linkedUsers.add(ConfigUtils.decodeUsername(key.toString()));
+                    linkedUsers.add(Bukkit.getOfflinePlayer(uuid).getName());
                 }
             }
             List<String> onlinePlayers = new ArrayList<>();

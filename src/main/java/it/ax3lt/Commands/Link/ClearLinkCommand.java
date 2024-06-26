@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ClearLinkCommand implements CommandExecutor {
     @Override
@@ -25,13 +26,14 @@ public class ClearLinkCommand implements CommandExecutor {
         }
 
         String mcName = args[2];
-        List<String> linkedUsers = ConfigUtils.getLinkedUserStringList(mcName);
+        UUID playerUUID = Bukkit.getOfflinePlayer(mcName).getUniqueId();
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + playerUUID.toString());
         if (linkedUsers == null || linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-list-empty")));
             return true;
         }
 
-        ConfigUtils.setLinkedUserStringList(mcName, null);
+        TLA.config.set("linked_users." + playerUUID.toString(), null);
         try {
             TLA.config.save();
             TLA.config.reload();

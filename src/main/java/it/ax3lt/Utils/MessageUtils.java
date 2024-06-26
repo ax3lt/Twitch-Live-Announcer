@@ -61,13 +61,6 @@ public class MessageUtils {
         }
     }
 
-//    # Additional multi stream message
-//    multipleStreamService:
-//    enabled: false
-//            # Available services: 'multistream', 'multitwitch'
-//    type: 'multistream'
-//            # The URL of the service
-//    configuration: '/%channels%/layout0'
 
     private static String generateMultiUrlStreamLink() {
         String type = ConfigUtils.getConfigString("multipleStreamService.type");
