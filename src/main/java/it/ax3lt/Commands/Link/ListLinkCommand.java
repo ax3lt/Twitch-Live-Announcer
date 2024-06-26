@@ -35,7 +35,7 @@ public class ListLinkCommand implements CommandExecutor {
             String playerUUID = (String) key;
             String playerName = "";
             try {
-                playerName = Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(playerUUID))).getName();
+                playerName = Objects.requireNonNull(Bukkit.getOfflinePlayer(UUID.fromString(playerUUID))).getName();
             } catch (Exception e) {
                 playerName = "Unknown";
             }
