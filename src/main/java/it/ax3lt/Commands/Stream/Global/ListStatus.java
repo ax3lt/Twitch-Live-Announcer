@@ -1,4 +1,4 @@
-package it.ax3lt.Commands.Global;
+package it.ax3lt.Commands.Stream.Global;
 
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
@@ -9,7 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 

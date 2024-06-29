@@ -14,6 +14,16 @@ commands:
     permission-message: You don't have permission to use this command
     default: op
     tabcomplete: [ reload ]
+  setchannel:
+    description: Set your twitch channel
+    usage: /setchannel <channel>
+    permission: twitchliveannouncer.setchannel
+    default: true
+  clearchannel:
+    description: Clear your twitch channel
+    usage: /clearchannel
+    permission: twitchliveannouncer.clearchannel
+    default: true
 
 permissions:
   twitchliveannouncer.reload:

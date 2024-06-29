@@ -100,7 +100,6 @@ public class MessageUtils {
             channelsList.setLength(channelsList.length() - 1);
         }
 
-        System.out.println(baseUrl + configuration.replace("%channels%", channelsList.toString()).replaceAll("%separator%", ConfigUtils.getConfigString("multipleStreamService.separator")));
         return (baseUrl + configuration.replace("%channels%", channelsList.toString())).replaceAll("%separator%", ConfigUtils.getConfigString("multipleStreamService.separator"));
     }
 }

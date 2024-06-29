@@ -1,14 +1,12 @@
-package it.ax3lt.Commands.Link;
+package it.ax3lt.Commands.Stream.Link;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
-import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class ListLinkCommand implements CommandExecutor {
             return true;
 
 
-        Section linkedUsers = TLA.config.getSection("linked_users");;
+        Section linkedUsers = TLA.config.getSection("linked_users");
         if (linkedUsers == null || linkedUsers.getKeys().isEmpty()) {
             sender.sendMessage(MessagesConfigUtils.getString("link-list-empty"));
             return true;

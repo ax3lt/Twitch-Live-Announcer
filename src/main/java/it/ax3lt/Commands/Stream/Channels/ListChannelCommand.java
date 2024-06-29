@@ -1,4 +1,4 @@
-package it.ax3lt.Commands.Channels;
+package it.ax3lt.Commands.Stream.Channels;
 
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;

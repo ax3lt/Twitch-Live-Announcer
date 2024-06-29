@@ -37,24 +37,24 @@ public class StreamCommandTabHandler implements TabCompleter {
         }
 
 
-        if (args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("add")) { // /stream link add
+        if (args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("add") && sender.hasPermission("twitchliveannouncer.link.add")) { // /stream link add
             if(args.length == 3)
                 return List.of("<mcname>");
             if(args.length == 4)
                 return List.of("<twitchname>");
         }
-        if(args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("clear")) {
+        if(args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("clear") && sender.hasPermission("twitchliveannouncer.link.clear")) { // /stream link clear
             return List.of("<mcname>");
         }
-        if (args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("remove")) {
+        if (args.length >= 3 && args[0].equalsIgnoreCase("link") && args[1].equalsIgnoreCase("remove") && sender.hasPermission("twitchliveannouncer.link.remove")) { // /stream link remove
             return new RemoveLinkTabComplete().onTabComplete(sender, command, label, args);
         }
 
 
-        if (args.length == 3 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("add")) { // /stream channels add
+        if (args.length == 3 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("add") && sender.hasPermission("twitchliveannouncer.channels.add")) { // /stream channels add
             return List.of("<twitchChannel>");
         }
-        if (args.length == 3 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("remove")) { // /stream channels remove (list of channels)
+        if (args.length == 3 && args[0].equalsIgnoreCase("channels") && args[1].equalsIgnoreCase("remove") && sender.hasPermission("twitchliveannouncer.channels.remove")) { // /stream channels remove
             return TLA.config.getStringList("channels");
         }
 

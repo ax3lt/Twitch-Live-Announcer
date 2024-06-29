@@ -1,6 +1,5 @@
-package it.ax3lt.Commands.Link;
+package it.ax3lt.Commands.Stream.Link;
 
-import dev.dejvokep.boostedyaml.route.Route;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
@@ -32,6 +31,18 @@ public class AddLinkCommand implements CommandExecutor {
         String mcName = args[2];
         UUID playerUUID = Bukkit.getOfflinePlayer(mcName).getUniqueId();
         String twitchName = args[3];
+
+        // Check if mcName and twitchName are already in the config
+//        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + playerUUID);
+
+
+        // Check if the player already has a link (twitchliveannouncer.link.multiple can bypass)
+        if(!sender.hasPermission("twitchliveannouncer.link.multiple") && !linkedUsers.isEmpty()) {
+            sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("already-have-a-link")));
+            return true;
+        }
+
         // Check if channel is in the list, if it isn't, add it
         if (!TLA.config.getStringList("channels").contains(twitchName)) {
             List<String> channels = TLA.config.getStringList("channels");
@@ -43,17 +54,6 @@ public class AddLinkCommand implements CommandExecutor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        // Check if mcName and twitchName are already in the config
-//        List<String> linkedUsers = TLA.config.getStringList("linked_users." + mcName);
-        List<String> linkedUsers = TLA.config.getStringList("linked_users." + String.valueOf(playerUUID));
-
-
-        // Check if the player already has a link (twitchliveannouncer.link.multiple can bypass)
-        if(!sender.hasPermission("twitchliveannouncer.link.multiple") && !linkedUsers.isEmpty()) {
-            sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("already-have-a-link")));
-            return true;
         }
 
         // Check if the link is already made

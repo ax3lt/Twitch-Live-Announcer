@@ -59,3 +59,15 @@ successConnectingToDatabase: '%prefix% &8» &7Successfully connected to the data
 errorConnectingToDatabase: '%prefix% &8» &cError connecting to the database: %error%'
 errorClosingDatabaseConnection: '%prefix% &8» &cError closing the database connection: %error%'
 errorCreatingTable: '%prefix% &8» &cError creating the table: %error%'
+
+
+# /setchannel and /clearchannel messages
+mustbeplayer: "&8» &cYou must be a player to use this command."
+channelalreadyset: "&8» &c%channel% is already used by another player."
+setchannelusage: "&8» &cUsage: /setchannel <channel>"
+channelset: "&8» &aChannel set to %channel%."
+alreadyhaveachannel: "&8» &cYou already have a channel, clear it first."
+clearchannelusage: "&8» &cUsage: /clearchannel"
+channelcleared: "&8» &aChannel cleared."
+nolinkedchannel: "&8» &cYou don't have a linked channel."
+no_permission: "&8» &cYou don't have permission to use this command."

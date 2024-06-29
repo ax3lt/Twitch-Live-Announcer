@@ -1,7 +1,6 @@
-package it.ax3lt.Commands.Link;
+package it.ax3lt.Commands.Stream.Link;
 
 import it.ax3lt.Main.TLA;
-import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -27,13 +26,13 @@ public class ClearLinkCommand implements CommandExecutor {
 
         String mcName = args[2];
         UUID playerUUID = Bukkit.getOfflinePlayer(mcName).getUniqueId();
-        List<String> linkedUsers = TLA.config.getStringList("linked_users." + playerUUID.toString());
+        List<String> linkedUsers = TLA.config.getStringList("linked_users." + playerUUID);
         if (linkedUsers == null || linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("link-list-empty")));
             return true;
         }
 
-        TLA.config.set("linked_users." + playerUUID.toString(), null);
+        TLA.config.set("linked_users." + playerUUID, null);
         try {
             TLA.config.save();
             TLA.config.reload();

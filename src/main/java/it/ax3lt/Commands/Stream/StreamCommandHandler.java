@@ -1,24 +1,20 @@
-package it.ax3lt.Commands;
+package it.ax3lt.Commands.Stream;
 
-import it.ax3lt.Commands.Channels.AddChannelCommand;
-import it.ax3lt.Commands.Channels.ListChannelCommand;
-import it.ax3lt.Commands.Channels.RemoveChannelCommand;
-import it.ax3lt.Commands.Global.ForceCheckCommand;
-import it.ax3lt.Commands.Global.ListStatus;
-import it.ax3lt.Commands.Global.ReloadCommand;
-import it.ax3lt.Commands.Link.AddLinkCommand;
-import it.ax3lt.Commands.Link.ClearLinkCommand;
-import it.ax3lt.Commands.Link.ListLinkCommand;
-import it.ax3lt.Commands.Link.RemoveLinkCommand;
-import it.ax3lt.Main.TLA;
+import it.ax3lt.Commands.Stream.Channels.AddChannelCommand;
+import it.ax3lt.Commands.Stream.Channels.ListChannelCommand;
+import it.ax3lt.Commands.Stream.Channels.RemoveChannelCommand;
+import it.ax3lt.Commands.Stream.Global.ForceCheckCommand;
+import it.ax3lt.Commands.Stream.Global.ListStatus;
+import it.ax3lt.Commands.Stream.Global.ReloadCommand;
+import it.ax3lt.Commands.Stream.Link.AddLinkCommand;
+import it.ax3lt.Commands.Stream.Link.ClearLinkCommand;
+import it.ax3lt.Commands.Stream.Link.ListLinkCommand;
+import it.ax3lt.Commands.Stream.Link.RemoveLinkCommand;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class StreamCommandHandler implements CommandExecutor {
     // /stream

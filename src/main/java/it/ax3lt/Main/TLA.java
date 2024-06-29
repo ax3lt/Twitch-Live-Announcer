@@ -8,7 +8,7 @@ import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import it.ax3lt.Bstats.Metrics;
 import it.ax3lt.BungeeManager.MessageListener;
-import it.ax3lt.Commands.StreamCommandHandler;
+import it.ax3lt.Commands.Stream.StreamCommandHandler;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolderManager;
 import it.ax3lt.TabComplete.StreamCommandTabHandler;
 import it.ax3lt.Utils.Configs.ConfigUtils;
@@ -45,6 +45,8 @@ public final class TLA extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler()); // Register tab completer for /stream command
         Objects.requireNonNull(getCommand("stream")).setExecutor(new StreamCommandHandler()); // Register command executor for /stream command
+        Objects.requireNonNull(getCommand("setchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.SetChannelCommand()); // Register command executor for /setchannel command
+        Objects.requireNonNull(getCommand("clearchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.ClearChannelCommand()); // Register command executor for /clearchannel command
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) { // Check if PlaceholderAPI is installed
             new PlaceHolderManager().register();
