@@ -33,11 +33,16 @@ public class ListLinkCommand implements CommandExecutor {
         sender.sendMessage(MessagesConfigUtils.getString("show-links-header"));
         for (Object key : linkedUsers.getKeys()) {
             String playerUUID = (String) key;
+            UUID uuid = UUID.fromString(playerUUID);
             String playerName = "";
             try {
-                playerName = Objects.requireNonNull(Bukkit.getOfflinePlayer(UUID.fromString(playerUUID))).getName();
+                playerName = Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
             } catch (Exception e) {
                 playerName = "Unknown";
+            }
+            finally {
+                if(playerName == null)
+                    playerName = "Unknown";
             }
 
             StringBuilder channels = new StringBuilder();

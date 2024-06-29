@@ -38,22 +38,89 @@ public class MysqlConnection {
 
     // errorConnectingToDatabase: '%prefix% &8» &cError connecting to the database: %error%'
 
-    public static void connect() {
-        if (enabled) {
-            // Connect to MySQL
+    public static boolean canConnect() {
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+            TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("successConnectingToDatabase"));
+            return true;
+        } catch (SQLException e) {
+            TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorConnectingToDatabase").replace("%error%", e.getMessage()));
+        } finally {
             try {
-                conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
-                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("successConnectingToDatabase"));
-            } catch (SQLException e) {
-                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorConnectingToDatabase").replace("%error%", e.getMessage()));
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (SQLException e) {
-                    TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClosingDatabaseConnection").replace("%error%", e.getMessage()));
+                if (conn != null) {
+                    conn.close();
                 }
+            } catch (SQLException e) {
+                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClosingDatabaseConnection").replace("%error%", e.getMessage()));
+            }
+        }
+        return false;
+    }
+
+    public static void setupTable() {
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+            conn.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (channel VARCHAR(255))");
+        } catch (SQLException e) {
+            TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorCreatingTable").replace("%error%", e.getMessage()));
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClosingDatabaseConnection").replace("%error%", e.getMessage()));
+            }
+        }
+    }
+
+    public static void addChannel(String channel) {
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+            conn.createStatement().executeUpdate("INSERT INTO " + table + " (channel) VALUES ('" + channel + "')");
+        } catch (SQLException e) {
+            TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorAddingChannel").replace("%error%", e.getMessage()));
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClosingDatabaseConnection").replace("%error%", e.getMessage()));
+            }
+        }
+    }
+
+    public static void removeChannel(String channel) {
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+            conn.createStatement().executeUpdate("DELETE FROM " + table + " WHERE channel = '" + channel + "'");
+        } catch (SQLException e) {
+            TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorRemovingChannel").replace("%error%", e.getMessage()));
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClosingDatabaseConnection").replace("%error%", e.getMessage()));
+            }
+        }
+    }
+
+    public static void clearTable() {
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+            conn.createStatement().executeUpdate("TRUNCATE TABLE " + table);
+        } catch (SQLException e) {
+            TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClearingTable").replace("%error%", e.getMessage()));
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                TLA.getInstance().getServer().getConsoleSender().sendMessage(MessagesConfigUtils.getString("errorClosingDatabaseConnection").replace("%error%", e.getMessage()));
             }
         }
     }

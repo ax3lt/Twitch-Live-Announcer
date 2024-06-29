@@ -24,9 +24,14 @@ multipleStreamService:
   enabled: false
   broadcastTime: 60
   # Available services: 'multistream', 'multitwitch'
-  type: 'multistream'
+  type: 'multitwitch'
   # The URL to the service
-  configuration: '/%channels%/layout0'
+  configuration: '%separator%%channels%'
+  # The separator for the channels, example: 'channel1/channel2/channel3'
+  separator: '/'
+  # If you want to use a custom URL, set this to true, type will be ignored
+  useCustomUrl: false
+  baseUrl: 'https://customservice.com'
 
 
 # Store current streaming channels in a MYSQL database,

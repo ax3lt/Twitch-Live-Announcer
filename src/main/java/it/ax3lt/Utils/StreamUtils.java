@@ -6,6 +6,7 @@ import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.*;
@@ -54,6 +55,17 @@ public class StreamUtils {
                     // Stream is offline
                     if (streams.containsKey(channel)) {
                         streams.remove(channel);
+
+                        // Remove channel from database
+                        if (MysqlConnection.enabled) {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    MysqlConnection.removeChannel(channel);
+                                }
+                            }.runTaskAsynchronously(plugin);
+                        }
+
                         if (!TLA.config.getBoolean("disable-not-streaming-message")) {
                             MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
@@ -108,6 +120,16 @@ public class StreamUtils {
                     String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
                     if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
                         streams.put(channel, streamId);
+
+                        // Add channel to database
+                        if (MysqlConnection.enabled) {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    MysqlConnection.addChannel(channel);
+                                }
+                            }.runTaskAsynchronously(plugin);
+                        }
 
                         if (!TLA.config.getBoolean("disable-streaming-message")) {
                             MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))

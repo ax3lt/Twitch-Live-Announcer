@@ -30,7 +30,7 @@ public class RemoveLinkTabComplete {
                     UUID uuid = UUID.fromString((String) key);
                     String playerName = "";
                     try {
-                        playerName = Objects.requireNonNull(Bukkit.getPlayer((uuid))).getName();
+                        playerName = Objects.requireNonNull(Bukkit.getOfflinePlayer((uuid))).getName();
                     } catch (Exception e) {
                         playerName = "Unknown";
                     }

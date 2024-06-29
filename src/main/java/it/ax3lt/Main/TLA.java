@@ -59,11 +59,16 @@ public final class TLA extends JavaPlugin {
         if (getConfig().getBoolean("check_updates"))
             new UpdateChecker().checkUpdate();
 
-        if(getConfig().getBoolean("mysql.enabled")) {
+        if (getConfig().getBoolean("mysql.enabled")) {
             MysqlConnection.load();
-            MysqlConnection.connect();
+            if (MysqlConnection.canConnect()) {
+                MysqlConnection.setupTable();
+                MysqlConnection.clearTable();
+            } else {
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            }
         }
-
 
         // Register BungeeCord channel
         if (getConfig().getBoolean("bungee.enabled")) {
@@ -84,16 +89,19 @@ public final class TLA extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        getServer().getScheduler().scheduleAsyncRepeatingTask(this, () -> {
-            try {
-                StreamUtils.refresh();
-            } catch (IOException e) {
-                getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("refresh_stream_error"))
-                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                        .replace("%message%", e.getMessage())
-                );
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    StreamUtils.refresh();
+                } catch (IOException e) {
+                    getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("refresh_stream_error"))
+                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                            .replace("%message%", e.getMessage())
+                    );
+                }
             }
-        }, 0L, getConfig().getLong("reload_time") * 20L);
+        }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("reload_time") * 20L);
 
 
         new BukkitRunnable() {
