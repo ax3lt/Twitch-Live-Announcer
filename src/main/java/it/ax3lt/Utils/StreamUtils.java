@@ -6,6 +6,7 @@ import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
@@ -53,108 +54,120 @@ public class StreamUtils {
                 // Check stream status
                 if (streamInfo.get("data").getAsJsonArray().isEmpty()) {
                     // Stream is offline
-                    if (streams.containsKey(channel)) {
-                        streams.remove(channel);
-
-                        // Remove channel from database
-                        if (MysqlConnection.enabled) {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    MysqlConnection.removeChannel(channel);
-                                }
-                            }.runTaskAsynchronously(plugin);
-                        }
-
-                        if (!TLA.config.getBoolean("disable-not-streaming-message")) {
-                            MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
-                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                    .replace("%channel%", channel), channel);
-                        }
-
-                        //Execute custom command
-                        if (TLA.config.getBoolean("commands.enabled")) {
-                            List<String> commands = TLA.config.getStringList("commands.stop");
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                for (String command : commands) {
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                            .replace("%channel%", channel));
-                                }
-                            });
-                        }
-                    }
+                    doOfflineStream(channel);
                 } else {
                     // Stream is online
                     String streamGameName = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("game_name").getAsString().toLowerCase();
                     String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString().toLowerCase();
-
-                    if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games").stream()
-                            .map(String::toLowerCase)
-                            .noneMatch(streamGameName::contains)) {
-                        return;
-                    }
-                    if (TLA.config.getBoolean("filter-stream-title.enabled") && TLA.config.getStringList("filter-stream-title.text").stream()
-                            .map(String::toLowerCase)
-                            .noneMatch(streamTitle::contains)) {
-                        return;
-                    }
-
-
-                    // Execute customPlayer command
-                    if (TLA.config.getBoolean("timedCommands.enabled")) {
-                        List<String> commands = TLA.config.getStringList("timedCommands.live");
-                        getLinkedUser(channel).forEach(user -> {
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                for (String command : commands) {
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                            .replace("%channel%", channel)
-                                            .replace("%title%", streamTitle)
-                                            .replace("%player%", user));
-                                }
-                            });
-                        });
-                    }
-
                     String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
-                    if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
-                        streams.put(channel, streamId);
-
-                        // Add channel to database
-                        if (MysqlConnection.enabled) {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    MysqlConnection.addChannel(channel);
-                                }
-                            }.runTaskAsynchronously(plugin);
-                        }
-
-                        if (!TLA.config.getBoolean("disable-streaming-message")) {
-                            MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
-                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                            .replace("%channel%", channel)
-                                            .replace("%title%", streamTitle)
-                                    , channel);
-                        }
-
-                        //Execute custom command
-                        if (TLA.config.getBoolean("commands.enabled")) {
-                            List<String> commands = TLA.config.getStringList("commands.start");
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                for (String command : commands) {
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                            .replace("%channel%", channel)
-                                            .replace("%title%", streamTitle));
-                                }
-                            });
-                        }
-                    }
+                    doOnlineStream(channel, streamId, streamGameName, streamTitle);
                 }
             }
         });
+    }
+
+    private static void doOfflineStream(String channel) {
+        if (streams.containsKey(channel)) {
+            streams.remove(channel);
+
+            // Remove channel from database
+            if (MysqlConnection.enabled) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        MysqlConnection.removeChannel(channel);
+                    }
+                }.runTaskAsynchronously(plugin);
+            }
+
+            if (!TLA.config.getBoolean("disable-not-streaming-message")) {
+                MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
+                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                        .replace("%channel%", channel), channel);
+            }
+
+            //Execute custom command
+            if (TLA.config.getBoolean("commands.enabled")) {
+                List<String> commands = TLA.config.getStringList("commands.stop");
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    for (String command : commands) {
+                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                .replace("%channel%", channel));
+                    }
+                });
+            }
+        }
+    }
+
+    private static void doOnlineStream(String channel, String streamId, String streamGameName, String streamTitle) {
+        if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games")
+                .stream()
+                .map(String::toLowerCase)
+                .noneMatch(streamGameName::contains)) {
+            doOfflineStream(channel);
+            return;
+        }
+        if (TLA.config.getBoolean("filter-stream-title.enabled") && TLA.config.getStringList("filter-stream-title.text")
+                .stream()
+                .map(String::toLowerCase)
+                .noneMatch(streamTitle::contains)) {
+            doOfflineStream(channel);
+            return;
+        }
+
+
+        // Execute customPlayer command
+        if (TLA.config.getBoolean("timedCommands.enabled")) {
+            List<String> commands = TLA.config.getStringList("timedCommands.live");
+            getLinkedUser(channel).forEach(user -> {
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    for (String command : commands) {
+                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                .replace("%channel%", channel)
+                                .replace("%title%", streamTitle)
+                                .replace("%player%", user));
+                    }
+                });
+            });
+        }
+
+//        String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
+        if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
+            streams.put(channel, streamId);
+
+            // Add channel to database
+            if (MysqlConnection.enabled) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        MysqlConnection.addChannel(channel);
+                    }
+                }.runTaskAsynchronously(plugin);
+            }
+
+            if (!TLA.config.getBoolean("disable-streaming-message")) {
+                MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
+                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                .replace("%channel%", channel)
+                                .replace("%title%", streamTitle)
+                        , channel);
+            }
+
+            //Execute custom command
+            if (TLA.config.getBoolean("commands.enabled")) {
+                List<String> commands = TLA.config.getStringList("commands.start");
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    for (String command : commands) {
+                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                .replace("%channel%", channel)
+                                .replace("%title%", streamTitle));
+                    }
+                });
+            }
+        }
     }
 
     private static List<String> getLinkedUser(String channel) {
