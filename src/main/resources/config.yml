@@ -1,5 +1,5 @@
 # !!! DO NOT TOUCH THIS !!!
-config-version: 1
+config-version: 2
 
 prefix: '&8[&cTwitch&8]'
 reload_time: 60
