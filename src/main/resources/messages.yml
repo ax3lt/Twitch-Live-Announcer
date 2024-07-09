@@ -1,5 +1,5 @@
 # !!! DO NOT TOUCH THIS !!!
-messages-version: 1
+messages-version: 2
 
 # Stream messages
 now_streaming: '%prefix% &8» &7%channel% &7is now streaming &8[&c&l%title%&8] %link%'
