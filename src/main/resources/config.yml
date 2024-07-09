@@ -10,6 +10,9 @@ client_secret: ''
 
 check_updates: true
 
+# If you want to remove channels that are invalid from the configuration to not show the message in console (not found on Twitch)
+remove_invalid_channels: true
+
 # The list of channels you want to check
 channels:
   - 'channel1'

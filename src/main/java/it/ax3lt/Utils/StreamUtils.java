@@ -6,7 +6,6 @@ import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
@@ -39,6 +38,13 @@ public class StreamUtils {
                     if (userId == null) {
                         Bukkit.getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("invalid_channel"))
                                 .replace("%channel%", channel));
+
+                        // Remove channel from config
+                        List<String> currentChannels = TLA.config.getStringList("channels"); // i fetch again so i can remove the channel and  not update the first List
+                        currentChannels.remove(channel);
+                        TLA.config.set("channels", currentChannels);
+                        TLA.config.save();
+                        TLA.config.reload();
                         continue;
                     }
                 } catch (IOException e) {
