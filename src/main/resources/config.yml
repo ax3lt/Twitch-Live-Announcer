@@ -17,9 +17,9 @@ remove_invalid_channels: true
 channels:
   - 'channel1'
 
-# Twitch to Minecraft username linking (you can add and remove them via commands)
+# Twitch to Minecraft username linking (you can add and remove them via commands, or manually look for the player UUID)
 # Format:
-# minecraft_username: twitch_username
+# minecraft_UUID: twitch_username
 linked_users: []
 
 # Additional multi stream message
