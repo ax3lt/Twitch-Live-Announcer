@@ -95,12 +95,15 @@ public class StreamUtils {
             //Execute custom command
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.stop");
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    for (String command : commands) {
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                .replace("%channel%", channel));
-                    }
+                getLinkedUser(channel).forEach(user -> {
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                        for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%player%", user));
+                        }
+                    });
                 });
             }
         }
@@ -127,7 +130,7 @@ public class StreamUtils {
         if (TLA.config.getBoolean("timedCommands.enabled")) {
             List<String> commands = TLA.config.getStringList("timedCommands.live");
             getLinkedUser(channel).forEach(user -> {
-                Bukkit.getScheduler().runTask(plugin, () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     for (String command : commands) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
                                 .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
@@ -139,7 +142,8 @@ public class StreamUtils {
             });
         }
 
-//        String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
+
+        // Prima era offline, ora è online -> aggiungo il canale alla lista
         if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
             streams.put(channel, streamId);
 
@@ -164,13 +168,16 @@ public class StreamUtils {
             //Execute custom command
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.start");
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    for (String command : commands) {
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                .replace("%channel%", channel)
-                                .replace("%title%", streamTitle));
-                    }
+                getLinkedUser(channel).forEach(user -> {
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                        for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", streamTitle)
+                                    .replace("%player%", user));
+                        }
+                    });
                 });
             }
         }
