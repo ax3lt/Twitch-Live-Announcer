@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class StreamUtils {
@@ -96,8 +97,22 @@ public class StreamUtils {
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.stop");
                 getLinkedUser(channel).forEach(user -> {
-                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%player%", user));
+                        }
+                    });
+                });
+            }
+
+            if (TLA.config.getBoolean("channelCommands.enabled")) {
+                List<String> stopCommands = TLA.config.getStringList("channelCommands." + channel + ".stop");
+                getLinkedUser(channel).forEach(user -> {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        for (String command : stopCommands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
@@ -130,7 +145,7 @@ public class StreamUtils {
         if (TLA.config.getBoolean("timedCommands.enabled")) {
             List<String> commands = TLA.config.getStringList("timedCommands.live");
             getLinkedUser(channel).forEach(user -> {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                Bukkit.getScheduler().runTask(plugin, () -> {
                     for (String command : commands) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
                                 .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
@@ -165,17 +180,36 @@ public class StreamUtils {
                         , channel);
             }
 
-            //Execute custom command
+
+
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.start");
                 getLinkedUser(channel).forEach(user -> {
-                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
-                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+                            String finalCommand = command
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
                                     .replace("%title%", streamTitle)
-                                    .replace("%player%", user));
+                                    .replace("%player%", user);
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), finalCommand);
+                        }
+                    });
+                });
+            }
+
+
+            if (TLA.config.getBoolean("channelCommands.enabled")) {
+                List<String> startCommands = TLA.config.getStringList("channelCommands." + channel + ".start");
+                getLinkedUser(channel).forEach(user -> {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        for (String command : startCommands) {
+                            String finalCommand = command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", streamTitle)
+                                    .replace("%player%", user);
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), finalCommand);
                         }
                     });
                 });
@@ -186,23 +220,33 @@ public class StreamUtils {
     private static List<String> getLinkedUser(String channel) {
         Section linkedUsersSection = TLA.config.getSection("linked_users");
         List<String> linkedUsers = new ArrayList<>();
+        String lowerCaseChannel = channel.toLowerCase();
 
         if (linkedUsersSection != null) {
             for (Object key : linkedUsersSection.getKeys()) {
                 UUID uuid = UUID.fromString(key.toString());
                 List<String> linkedChannels = TLA.config.getStringList("linked_users." + uuid);
-                if (linkedChannels.contains(channel)) {
-                    linkedUsers.add(Bukkit.getOfflinePlayer(uuid).getName());
+
+                // Convert linkedChannels to lowercase for case-insensitive comparison
+                List<String> lowerCaseLinkedChannels = linkedChannels.stream()
+                        .map(String::toLowerCase)
+                        .collect(Collectors.toList());
+
+                if (lowerCaseLinkedChannels.contains(lowerCaseChannel)) {
+                    linkedUsers.add(Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid).getName()).toLowerCase());
                 }
             }
+
             List<String> onlinePlayers = new ArrayList<>();
             plugin.getServer().getOnlinePlayers().forEach(player -> {
-                if (linkedUsers.contains(player.getName()))
+                if (linkedUsers.contains(player.getName().toLowerCase())) {
                     onlinePlayers.add(player.getName());
+                }
             });
             return onlinePlayers;
         }
         return new ArrayList<>();
     }
+
 
 }

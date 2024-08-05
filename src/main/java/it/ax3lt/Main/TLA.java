@@ -123,8 +123,8 @@ public final class TLA extends JavaPlugin {
     public void onDisable() {
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
-        Bukkit.getServer().getScheduler().cancelTasks(this);
-        getServer().getScheduler().cancelTasks(this);
+//        Bukkit.getServer().getScheduler().cancelTasks(this);
+//        getServer().getScheduler().cancelTasks(this);
     }
 
     public static TLA getInstance() {
