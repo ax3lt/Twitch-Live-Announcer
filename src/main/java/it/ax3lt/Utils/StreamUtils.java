@@ -96,7 +96,7 @@ public class StreamUtils {
             //Execute custom command
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.stop");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, false).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -110,7 +110,7 @@ public class StreamUtils {
 
             if (TLA.config.getBoolean("channelCommands.enabled")) {
                 List<String> stopCommands = TLA.config.getStringList("channelCommands." + channel + ".stop");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, false).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : stopCommands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -144,7 +144,7 @@ public class StreamUtils {
         // Execute customPlayer command
         if (TLA.config.getBoolean("timedCommands.enabled")) {
             List<String> commands = TLA.config.getStringList("timedCommands.live");
-            getLinkedUser(channel).forEach(user -> {
+            getLinkedUser(channel, true).forEach(user -> {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     for (String command : commands) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -184,7 +184,7 @@ public class StreamUtils {
 
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.start");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, false).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
                             String finalCommand = command
@@ -201,7 +201,7 @@ public class StreamUtils {
 
             if (TLA.config.getBoolean("channelCommands.enabled")) {
                 List<String> startCommands = TLA.config.getStringList("channelCommands." + channel + ".start");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, false).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : startCommands) {
                             String finalCommand = command
@@ -217,7 +217,7 @@ public class StreamUtils {
         }
     }
 
-    private static List<String> getLinkedUser(String channel) {
+    private static List<String> getLinkedUser(String channel, boolean onlineOnly) {
         Section linkedUsersSection = TLA.config.getSection("linked_users");
         List<String> linkedUsers = new ArrayList<>();
         String lowerCaseChannel = channel.toLowerCase();
@@ -237,13 +237,16 @@ public class StreamUtils {
                 }
             }
 
-            List<String> onlinePlayers = new ArrayList<>();
-            plugin.getServer().getOnlinePlayers().forEach(player -> {
-                if (linkedUsers.contains(player.getName().toLowerCase())) {
-                    onlinePlayers.add(player.getName());
-                }
-            });
-            return onlinePlayers;
+            if(onlineOnly){
+                List<String> onlinePlayers = new ArrayList<>();
+                plugin.getServer().getOnlinePlayers().forEach(player -> {
+                    if (linkedUsers.contains(player.getName().toLowerCase())) {
+                        onlinePlayers.add(player.getName());
+                    }
+                });
+                return onlinePlayers;
+            }
+            return linkedUsers;
         }
         return new ArrayList<>();
     }

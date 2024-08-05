@@ -53,7 +53,7 @@ mysql:
 # This command will replace %player% with the linked player name and execute the command for EACH linked player
 # so if you have 3 linked players to a channel and the command is 'tellraw %player% {"text":"%channel% is now streaming","color":"gray"}'
 # it will execute the command 3 times with %player% replaced with each linked player name
-# This will be executed every reload_time seconds, and ONLY to the linked players that are ONLINE
+# This will be executed every reload_time seconds
 # Placeholders: %player% - linked player name, %channel% - channel name, %title% - stream title
 commands:
   enabled: false
@@ -63,7 +63,7 @@ commands:
     - 'tellraw @a {"text":"%channel% of %player% is not streaming anymore","color":"gray"}'
 
 
-# Here you can specify custom commands for each channel, the commands will be as always executed for each linked player
+# Here you can specify custom commands for each channel, the commands will be executed for each linked player
 channelCommands:
   enabled: false
   "channel1":
@@ -76,7 +76,7 @@ channelCommands:
 
 # Also here you can use %player% to replace with the linked player name, and %channel% to replace with the channel name
 # The command will be executed for each linked player, so like the commands above, if you have 3 linked players to a channel it will execute 3 times
-# This will be executed every reload_time seconds, and ONLY to the linked players that are online
+# This will be executed every reload_time seconds, and ONLY to the linked players that are ONLINE
 # Placeholders: %player% - linked player name, %channel% - channel name, %title% - stream title
 timedCommands:
  enabled: false
