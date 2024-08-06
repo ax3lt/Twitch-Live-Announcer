@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class StatusPlaceholder extends PlaceholderExpansion {
     String identifier, author, version;
@@ -28,24 +29,24 @@ public class StatusPlaceholder extends PlaceholderExpansion {
             return "";
         }
 
-        String username = player.getName();
         UUID playerUUID = player.getUniqueId();
 
         // Check in config file if the user is linked
         Section linked_users = TLA.config.getSection("linked_users");
-        if (linked_users != null) {
-            if (linked_users.contains(playerUUID.toString())) {
-                // Check if the user is online
-                List<String> streams = linked_users.getStringList(playerUUID.toString());
-                if (streams != null && !streams.isEmpty()) {
-                    for (String s : streams) {
-                        if (StreamUtils.streams.get(s) != null) {
-                            return ConfigUtils.getConfigString("placeholders.live");
-                        } else {
-                            return ConfigUtils.getConfigString("placeholders.offline");
-                        }
-                    }
+        if (linked_users != null && linked_users.contains(playerUUID.toString())) {
+            List<String> lowerCaseStreams = linked_users.getStringList(playerUUID.toString()).stream()
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList());
+
+            if (!lowerCaseStreams.isEmpty()) {
+                List<String> streamers = StreamUtils.streams.keySet().stream()
+                        .map(String::toLowerCase)
+                        .collect(Collectors.toList());
+                for (String s : lowerCaseStreams) {
+                    if(streamers.contains(s))
+                        return ConfigUtils.getConfigString("placeholders.live");
                 }
+                return ConfigUtils.getConfigString("placeholders.offline");
             }
         }
         return MessagesConfigUtils.getString("link_inexistent");
