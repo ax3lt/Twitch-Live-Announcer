@@ -31,6 +31,7 @@ public class StatusPlaceholder extends PlaceholderExpansion {
 
         UUID playerUUID = player.getUniqueId();
 
+        // TODO, fix also the other placeholders - they must check case insensitive
         // Check in config file if the user is linked
         Section linked_users = TLA.config.getSection("linked_users");
         if (linked_users != null && linked_users.contains(playerUUID.toString())) {
