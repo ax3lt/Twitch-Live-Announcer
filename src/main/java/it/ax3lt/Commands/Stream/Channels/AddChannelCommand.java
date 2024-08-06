@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class AddChannelCommand implements CommandExecutor {
     @Override
@@ -28,13 +29,21 @@ public class AddChannelCommand implements CommandExecutor {
 
 
         List<String> channels = TLA.config.getStringList("channels");
-        if (channels.contains(args[2]))
+
+        String channelToAdd = args[2].toLowerCase();
+
+        List<String> lowerCaseChannels = channels.stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        if (lowerCaseChannels.contains(channelToAdd)) {
             sender.sendMessage(MessagesConfigUtils.getString("channel-already-added").replace("%channel%", args[2]));
-        else {
-            channels.add(args[2]);
+        } else {
+            channels.add(args[2]);  // Add the original case-sensitive value
             sender.sendMessage(MessagesConfigUtils.getString("channel-added").replace("%channel%", args[2]));
             TLA.config.set("channels", channels);
         }
+
         try {
             TLA.config.save();
             TLA.config.reload();

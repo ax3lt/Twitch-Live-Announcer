@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class AddLinkCommand implements CommandExecutor {
     @Override
@@ -38,14 +39,21 @@ public class AddLinkCommand implements CommandExecutor {
 
 
         // Check if the player already has a link (twitchliveannouncer.link.multiple can bypass)
-        if(!sender.hasPermission("twitchliveannouncer.link.multiple") && !linkedUsers.isEmpty()) {
+        if (!sender.hasPermission("twitchliveannouncer.link.multiple") && !linkedUsers.isEmpty()) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("already-have-a-link")));
             return true;
         }
 
-        // Check if channel is in the list, if it isn't, add it
-        if (!TLA.config.getStringList("channels").contains(twitchName)) {
-            List<String> channels = TLA.config.getStringList("channels");
+        List<String> channels = TLA.config.getStringList("channels");
+
+        String twitchNameLowerCase = twitchName.toLowerCase();
+
+        List<String> lowerCaseChannels = channels.stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        if (!lowerCaseChannels.contains(twitchNameLowerCase)) {
+            // Add the channel in its original case
             channels.add(twitchName);
             TLA.config.set("channels", channels);
             try {
@@ -55,6 +63,7 @@ public class AddLinkCommand implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         }
+
 
         // Check if the link is already made
         if (linkedUsers != null && !linkedUsers.isEmpty()) {
