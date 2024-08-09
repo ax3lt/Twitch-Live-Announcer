@@ -1,5 +1,6 @@
 package it.ax3lt.Commands.SetAndClearChannel;
 
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
 import org.bukkit.command.Command;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public class SetChannelCommand implements CommandExecutor {
@@ -41,6 +43,20 @@ public class SetChannelCommand implements CommandExecutor {
         if(!sender.hasPermission("twitchliveannouncer.link.multiple") && !linkedUsers.isEmpty()) {
             sender.sendMessage(MessagesConfigUtils.getString("already-have-a-link"));
             return true;
+        }
+
+        // search if the channel is already linked with someone else, if so return
+        if(TLA.config.getSection("linked_users") != null) {
+            for (Object linkedUser : TLA.config.getSection("linked_users").getKeys()) {
+                List<String> channels = TLA.config.getStringList("linked_users." + linkedUser);
+                for (String s : channels) {
+                    if (s.equalsIgnoreCase(channel)) {
+                        sender.sendMessage(MessagesConfigUtils.getString("channelalreadyset")
+                                .replace("%channel%", channel));
+                        return true;
+                    }
+                }
+            }
         }
 
         // Check if channel is in the list, if it isn't, add it
