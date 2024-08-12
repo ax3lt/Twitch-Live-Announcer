@@ -36,7 +36,7 @@ show-channels-format: '&8- &7%channel%'
 
 # System messages
 reload_config: '%prefix% &8» &7Reloaded config'
-parameters_error: '%prefix% &8» &cError while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message%'
+parameters_error: '%prefix% &8» &cError while configuring the client_id and client_secret, maybe you forgot to put them in the config.yml? - %message% - PLUGIN WILL NOT WORK'
 refresh_stream_error: '%prefix% &8» &cError while refreshing the stream, maybe a username you added is not valid, or you are in timeout by twitch, try increasing the reload time and checking you channel list - %message%'
 reload: '%prefix% &8» &7Reloaded config'
 command_usage: '%prefix% &8» &7Usage: /twitch <channels | link | forceCheck | list | reload>'
@@ -56,7 +56,7 @@ update_check_error: '%prefix% &8» &cError while checking for updates'
 invalid_channel: '%prefix% &8» &c%channel% is not a valid channel'
 invalidMultiStreamService: '%prefix% &8» &cInvalid multi stream service'
 successConnectingToDatabase: '%prefix% &8» &7Successfully connected to the database'
-errorConnectingToDatabase: '%prefix% &8» &cError connecting to the database: %error%'
+errorConnectingToDatabase: '%prefix% &8» &cError connecting to the database: %error% - PLUGIN WILL NOT WORK'
 errorClosingDatabaseConnection: '%prefix% &8» &cError closing the database connection: %error%'
 errorCreatingTable: '%prefix% &8» &cError creating the table: %error%'
 

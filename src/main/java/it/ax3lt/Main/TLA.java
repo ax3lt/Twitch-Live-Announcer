@@ -35,6 +35,33 @@ public final class TLA extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        registerConfig();
+        if(!registerTwitchChecker()) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if(!registerMysql()) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        registerPlaceHolderApi();
+        registerBstats();
+        registerUpdateChecker();
+        registerBungeeManager();
+        registerCommands();
+        registerTabCompleters();
+
+        startTwitchCheckerRunnable();
+        startMultiStreamRunnable();
+    }
+
+    @Override
+    public void onDisable() {
+        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+        this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
+    }
+
+    private void registerConfig() {
         try {
             config = YamlDocument.create(new File(getDataFolder(), "config.yml"), Objects.requireNonNull(getResource("config.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
             messages = YamlDocument.create(new File(getDataFolder(), "messages.yml"), Objects.requireNonNull(getResource("messages.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("messages-version")).build());
@@ -42,44 +69,51 @@ public final class TLA extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
+        getConfig().options().copyDefaults(true);
+        saveDefaultConfig();
+    }
 
-        Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler()); // Register tab completer for /stream command
-        Objects.requireNonNull(getCommand("stream")).setExecutor(new StreamCommandHandler()); // Register command executor for /stream command
-        Objects.requireNonNull(getCommand("setchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.SetChannelCommand()); // Register command executor for /setchannel command
-        Objects.requireNonNull(getCommand("clearchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.ClearChannelCommand()); // Register command executor for /clearchannel command
+    private void registerUpdateChecker() {
+        if (getConfig().getBoolean("check_updates"))
+            new UpdateChecker().checkUpdate();
+    }
 
+    private void registerBstats() {
+        if (getConfig().getBoolean("bstats-enabled"))
+            m = new Metrics(this, 18430);
+    }
+
+    private void registerPlaceHolderApi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) { // Check if PlaceholderAPI is installed
             new PlaceHolderManager().register();
         }
+    }
 
-        getConfig().options().copyDefaults(true);
-        saveDefaultConfig();
-
-        if (getConfig().getBoolean("bstats-enabled"))
-            m = new Metrics(this, 18430);
-
-        if (getConfig().getBoolean("check_updates"))
-            new UpdateChecker().checkUpdate();
-
+    private boolean registerMysql() {
         if (getConfig().getBoolean("mysql.enabled")) {
             MysqlConnection.load();
             if (MysqlConnection.canConnect()) {
                 MysqlConnection.setupTable();
                 MysqlConnection.clearTable();
             } else {
-                getServer().getPluginManager().disablePlugin(this);
-                return;
+//                getServer().getPluginManager().disablePlugin(this);
+                return false;
             }
         }
+        return true;
+    }
 
+
+    private void registerBungeeManager() {
         // Register BungeeCord channel
         if (getConfig().getBoolean("bungee.enabled")) {
             bungeeMode = true;
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new MessageListener());
         }
+    }
 
-
+    private boolean registerTwitchChecker() {
         try {
             StreamUtils.configureParameters();
         } catch (IOException e) {
@@ -88,9 +122,13 @@ public final class TLA extends JavaPlugin {
                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                     .replace("%message%", e.getMessage())
             );
-            getServer().getPluginManager().disablePlugin(this);
+//            getServer().getPluginManager().disablePlugin(this);
+            return false;
         }
+        return true;
+    }
 
+    private void startTwitchCheckerRunnable() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -104,8 +142,9 @@ public final class TLA extends JavaPlugin {
                 }
             }
         }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("reload_time") * 20L);
+    }
 
-
+    private void startMultiStreamRunnable() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -119,12 +158,14 @@ public final class TLA extends JavaPlugin {
         }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("multipleStreamService.broadcastTime") * 20L);
     }
 
-    @Override
-    public void onDisable() {
-        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
-        this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
-//        Bukkit.getServer().getScheduler().cancelTasks(this);
-//        getServer().getScheduler().cancelTasks(this);
+    private void registerCommands() {
+        Objects.requireNonNull(getCommand("stream")).setExecutor(new StreamCommandHandler()); // Register command executor for /stream command
+        Objects.requireNonNull(getCommand("setchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.SetChannelCommand()); // Register command executor for /setchannel command
+        Objects.requireNonNull(getCommand("clearchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.ClearChannelCommand()); // Register command executor for /clearchannel command
+    }
+
+    private void registerTabCompleters() {
+        Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler()); // Register tab completer for /stream command
     }
 
     public static TLA getInstance() {
