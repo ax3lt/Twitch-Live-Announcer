@@ -10,6 +10,14 @@ client_secret: ''
 
 check_updates: true
 
+# Take configuration backup, will be stored in the 'backups' folder
+backupConfig:
+  enabled: true
+  # You can choose between 'daily' or 'startup', daily will create a backup every day at the specified time, startup will create a backup every time the server starts
+  when: 'startup'
+  # The time when the backup will be created (only for 'daily' option)
+  time: '00:00'
+
 # If you want to remove channels that are invalid from the configuration to not show the message in console (not found on Twitch)
 remove_invalid_channels: true
 

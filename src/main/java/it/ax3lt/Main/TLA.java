@@ -35,6 +35,7 @@ public final class TLA extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        takeConfigBackup();
         registerConfig();
         if(!registerTwitchChecker()) {
             getServer().getPluginManager().disablePlugin(this);
@@ -55,10 +56,46 @@ public final class TLA extends JavaPlugin {
         startMultiStreamRunnable();
     }
 
+
     @Override
     public void onDisable() {
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
+    }
+
+    private void takeConfigBackup() {
+        if (getConfig().getBoolean("backupConfig.enabled")) {
+            if (Objects.requireNonNull(getConfig().getString("backupConfig.when")).equalsIgnoreCase("daily")) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")).equals(Objects.requireNonNull(getConfig().getString("backupConfig.time")))) {
+                            if (!backupFile("config.yml"))
+                                getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("backup_error"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%file%", "config.yml")
+                                );
+                            if(!backupFile("messages.yml"))
+                                getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("backup_error"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%file%", "messages.yml")
+                                );
+                        }
+                    }
+                }.runTaskTimerAsynchronously(this, 0L, 1200L);
+            } else if (Objects.requireNonNull(getConfig().getString("backupConfig.when")).equalsIgnoreCase("startup")) {
+                if (!backupFile("config.yml"))
+                    getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("backup_error"))
+                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                            .replace("%file%", "config.yml")
+                    );
+                if(!backupFile("messages.yml"))
+                    getServer().getConsoleSender().sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("backup_error"))
+                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                            .replace("%file%", "messages.yml")
+                    );
+            }
+        }
     }
 
     private void registerConfig() {
@@ -96,7 +133,6 @@ public final class TLA extends JavaPlugin {
                 MysqlConnection.setupTable();
                 MysqlConnection.clearTable();
             } else {
-//                getServer().getPluginManager().disablePlugin(this);
                 return false;
             }
         }
@@ -122,7 +158,6 @@ public final class TLA extends JavaPlugin {
                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                     .replace("%message%", e.getMessage())
             );
-//            getServer().getPluginManager().disablePlugin(this);
             return false;
         }
         return true;
@@ -166,6 +201,26 @@ public final class TLA extends JavaPlugin {
 
     private void registerTabCompleters() {
         Objects.requireNonNull(getCommand("stream")).setTabCompleter(new StreamCommandTabHandler()); // Register tab completer for /stream command
+    }
+
+    public static boolean backupFile(String filename) {
+        if(!new File(TLA.getInstance().getDataFolder() + "/backups").exists()) {
+            new File(TLA.getInstance().getDataFolder() + "/backups").mkdir();
+        }
+        File configFile = new File(TLA.getInstance().getDataFolder(), filename);
+        // Backup filename: config.yml.18-12-2021_12-00-00
+        // Folder path: backups/....
+        String currentDateAndTime = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss"));
+        if (!configFile.exists()) {
+            return false;
+        }
+        try {
+            java.nio.file.Files.copy(configFile.toPath(), new File(TLA.getInstance().getDataFolder() + "/backups", filename + "." + currentDateAndTime).toPath());
+        } catch (IOException e) {
+            TLA.getInstance().getLogger().severe("Failed to backup config file, error: " + e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     public static TLA getInstance() {
