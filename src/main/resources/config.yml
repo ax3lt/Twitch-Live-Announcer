@@ -57,6 +57,7 @@ mysql:
 # Placeholders: %player% - linked player name, %channel% - channel name, %title% - stream title
 commands:
   enabled: false
+  skip_offline_players: true
   start:
     - 'tellraw @a {"text":"%channel% of %player% is now streaming","color":"gray"}'
   stop:

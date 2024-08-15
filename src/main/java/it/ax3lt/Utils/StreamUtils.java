@@ -12,14 +12,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class StreamUtils {
     public static HashMap<String, String> streams = new HashMap<>();
     private static String client_id;
     private static String token;
 
     static TLA plugin;
-
 
     public static void configureParameters() throws IOException {
         client_id = ConfigUtils.getConfigString("client_id");
@@ -41,7 +39,7 @@ public class StreamUtils {
                                 .replace("%channel%", channel));
 
                         // Remove channel from config
-                        List<String> currentChannels = TLA.config.getStringList("channels"); // i fetch again so i can remove the channel and  not update the first List
+                        List<String> currentChannels = TLA.config.getStringList("channels");
                         currentChannels.remove(channel);
                         TLA.config.set("channels", currentChannels);
                         TLA.config.save();
@@ -93,10 +91,10 @@ public class StreamUtils {
                         .replace("%channel%", channel), channel);
             }
 
-            //Execute custom command
+            // Execute custom command
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.stop");
-                getLinkedUser(channel, false).forEach(user -> {
+                getLinkedUser(channel).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -110,7 +108,7 @@ public class StreamUtils {
 
             if (TLA.config.getBoolean("channelCommands.enabled")) {
                 List<String> stopCommands = TLA.config.getStringList("channelCommands." + channel + ".stop");
-                getLinkedUser(channel, false).forEach(user -> {
+                getLinkedUser(channel).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : stopCommands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -140,11 +138,10 @@ public class StreamUtils {
             return;
         }
 
-
         // Execute customPlayer command
         if (TLA.config.getBoolean("timedCommands.enabled")) {
             List<String> commands = TLA.config.getStringList("timedCommands.live");
-            getLinkedUser(channel, true).forEach(user -> {
+            getLinkedUser(channel).forEach(user -> {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     for (String command : commands) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -156,7 +153,6 @@ public class StreamUtils {
                 });
             });
         }
-
 
         // Prima era offline, ora è online -> aggiungo il canale alla lista
         if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
@@ -180,11 +176,9 @@ public class StreamUtils {
                         , channel);
             }
 
-
-
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.start");
-                getLinkedUser(channel, false).forEach(user -> {
+                getLinkedUser(channel).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
                             String finalCommand = command
@@ -198,10 +192,9 @@ public class StreamUtils {
                 });
             }
 
-
             if (TLA.config.getBoolean("channelCommands.enabled")) {
                 List<String> startCommands = TLA.config.getStringList("channelCommands." + channel + ".start");
-                getLinkedUser(channel, false).forEach(user -> {
+                getLinkedUser(channel).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : startCommands) {
                             String finalCommand = command
@@ -217,7 +210,7 @@ public class StreamUtils {
         }
     }
 
-    private static List<String> getLinkedUser(String channel, boolean onlineOnly) {
+    private static List<String> getLinkedUser(String channel) {
         Section linkedUsersSection = TLA.config.getSection("linked_users");
         List<String> linkedUsers = new ArrayList<>();
         String lowerCaseChannel = channel.toLowerCase();
@@ -237,7 +230,9 @@ public class StreamUtils {
                 }
             }
 
-            if(onlineOnly){
+            // Check if we need to skip offline players
+            boolean skipOfflinePlayers = TLA.config.getBoolean("commands.skip_offline_players");
+            if (skipOfflinePlayers) {
                 List<String> onlinePlayers = new ArrayList<>();
                 plugin.getServer().getOnlinePlayers().forEach(player -> {
                     if (linkedUsers.contains(player.getName().toLowerCase())) {
@@ -246,10 +241,9 @@ public class StreamUtils {
                 });
                 return onlinePlayers;
             }
+
             return linkedUsers;
         }
         return new ArrayList<>();
     }
-
-
 }
