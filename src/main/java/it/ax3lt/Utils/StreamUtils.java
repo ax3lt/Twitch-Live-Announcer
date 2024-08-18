@@ -226,7 +226,10 @@ public class StreamUtils {
                         .collect(Collectors.toList());
 
                 if (lowerCaseLinkedChannels.contains(lowerCaseChannel)) {
-                    linkedUsers.add(Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid).getName()).toLowerCase());
+                    String playerName = Bukkit.getOfflinePlayer(uuid).getName();
+                    if (playerName != null) {
+                        linkedUsers.add(playerName.toLowerCase());
+                    }
                 }
             }
 
