@@ -35,8 +35,8 @@ public final class TLA extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        takeConfigBackup();
         registerConfig();
+        takeConfigBackup();
         if(!registerTwitchChecker()) {
             getServer().getPluginManager().disablePlugin(this);
             return;
