@@ -2,6 +2,7 @@ package it.ax3lt.Commands.SetAndClearChannel;
 
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
+import it.ax3lt.Utils.StreamUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,6 +42,9 @@ public class ClearChannelCommand implements CommandExecutor {
         List<String> channels = TLA.config.getStringList("channels");
         for (String s : linkedUsers) {
             channels.remove(s);
+
+            // Stop the stream if the channel is being cleared
+            StreamUtils.doOfflineStream(s);
         }
 
         TLA.config.set("channels", channels);

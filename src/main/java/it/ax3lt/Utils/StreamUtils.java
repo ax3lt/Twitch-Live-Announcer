@@ -71,7 +71,7 @@ public class StreamUtils {
         });
     }
 
-    private static void doOfflineStream(String channel) {
+    public static void doOfflineStream(String channel) {
         if (streams.containsKey(channel)) {
             streams.remove(channel);
 
@@ -122,7 +122,7 @@ public class StreamUtils {
         }
     }
 
-    private static void doOnlineStream(String channel, String streamId, String streamGameName, String streamTitle) {
+    public static void doOnlineStream(String channel, String streamId, String streamGameName, String streamTitle) {
         if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games")
                 .stream()
                 .map(String::toLowerCase)
