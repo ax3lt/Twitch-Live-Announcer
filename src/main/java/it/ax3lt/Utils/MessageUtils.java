@@ -91,7 +91,7 @@ public class MessageUtils {
             return null;
         }
 
-        List<String> channels = new ArrayList<>(StreamUtils.streams.keySet());
+        List<String> channels = new ArrayList<>(StreamUtils.getStreams().keySet());
         StringBuilder channelsList = new StringBuilder(); // channel1/channel2/channel3
         for (String channel : channels) {
             channelsList.append(channel).append(ConfigUtils.getConfigString("multipleStreamService.separator"));

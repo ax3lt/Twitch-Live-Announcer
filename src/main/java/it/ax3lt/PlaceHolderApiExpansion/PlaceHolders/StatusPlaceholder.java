@@ -40,7 +40,7 @@ public class StatusPlaceholder extends PlaceholderExpansion {
                     .collect(Collectors.toList());
 
             if (!lowerCaseStreams.isEmpty()) {
-                List<String> streamers = StreamUtils.streams.keySet().stream()
+                List<String> streamers = StreamUtils.getStreams().keySet().stream()
                         .map(String::toLowerCase)
                         .collect(Collectors.toList());
                 for (String s : lowerCaseStreams) {

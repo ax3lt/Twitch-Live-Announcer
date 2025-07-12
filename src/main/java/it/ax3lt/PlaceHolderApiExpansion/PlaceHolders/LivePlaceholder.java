@@ -37,7 +37,7 @@ public class LivePlaceholder extends PlaceholderExpansion {
                     List<String> streams = linked_users.getStringList(uuid.toString());
                     if (streams != null && !streams.isEmpty()) {
                         for (String s : streams) {
-                            if (StreamUtils.streams.get(s) != null) {
+                            if (StreamUtils.getStreams().get(s) != null) {
                                 return "true";
                             } else {
                                 return "false";

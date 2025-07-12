@@ -36,7 +36,7 @@ public class StatusStringPlaceholder extends PlaceholderExpansion {
                     List<String> streams = linked_users.getStringList(playerUUID.toString());
                     if (streams != null && !streams.isEmpty()) {
                         for (String s : streams) {
-                            if (StreamUtils.streams.get(s) != null) {
+                            if (StreamUtils.getStreams().get(s) != null) {
                                 return ConfigUtils.getConfigString("placeholders.live");
                             } else {
                                 return ConfigUtils.getConfigString("placeholders.offline");

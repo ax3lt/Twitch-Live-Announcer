@@ -51,9 +51,14 @@ public final class TLA extends JavaPlugin {
         registerBungeeManager();
         registerCommands();
         registerTabCompleters();
+        registerEventListeners();
 
         startTwitchCheckerRunnable();
         startMultiStreamRunnable();
+    }
+
+    private void registerEventListeners() {
+        Bukkit.getPluginManager().registerEvents(new it.ax3lt.Listeners.StreamerJoinEvent(), this);
     }
 
 
@@ -184,7 +189,7 @@ public final class TLA extends JavaPlugin {
             @Override
             public void run() {
                 if (getConfig().getBoolean("multipleStreamService.enabled")) {
-                    if (!StreamUtils.streams.isEmpty()) {
+                    if (!StreamUtils.getStreams().isEmpty()) {
                         MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("multi-stream"))
                                 .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))), "");
                     }

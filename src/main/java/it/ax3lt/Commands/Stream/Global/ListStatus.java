@@ -23,7 +23,7 @@ public class ListStatus implements CommandExecutor {
         for (String channel : channels) {
             sender.sendMessage(Objects.requireNonNull(MessagesConfigUtils.getString("list-format"))
                     .replace("%channel%", channel)
-                    .replace("%status%", StreamUtils.streams.containsKey(channel)
+                    .replace("%status%", StreamUtils.getStreams().containsKey(channel)
                             ? ConfigUtils.getConfigString("placeholders.live") : ConfigUtils.getConfigString("placeholders.offline")));
         }
 

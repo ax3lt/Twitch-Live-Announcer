@@ -1,5 +1,5 @@
 name: TwitchLiveAnnouncer
-version: '${project.version}'
+version: '${version}'
 main: it.ax3lt.Main.TLA
 author: ax3lt
 description: A simple plugin to notify when a streamer goes live

@@ -2,6 +2,7 @@ package it.ax3lt.Utils;
 
 import com.google.gson.JsonObject;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import it.ax3lt.Classes.StreamData;
 import it.ax3lt.Main.TLA;
 import it.ax3lt.Utils.Configs.ConfigUtils;
 import it.ax3lt.Utils.Configs.MessagesConfigUtils;
@@ -13,9 +14,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class StreamUtils {
-    public static HashMap<String, String> streams = new HashMap<>();
+
+    private static HashMap<String, String> streams = new HashMap<>();
+    private static HashMap<String, StreamData> streamQueue = new HashMap<>();
     private static String client_id;
     private static String token;
+
+    public static HashMap<String, String> getStreams() {
+        return streams;
+    }
+
+    public static HashMap<String, StreamData> getStreamQueue() {
+        return streamQueue;
+    }
 
     static TLA plugin;
 
@@ -86,15 +97,27 @@ public class StreamUtils {
             }
 
             if (!TLA.config.getBoolean("disable-not-streaming-message")) {
-                MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
-                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                        .replace("%channel%", channel), channel);
+                if (TLA.config.getBoolean("announce-only-if-streamer-on-server")) {
+                    dequeueStream(channel);
+                    // Check if the streamer is online
+                    List<String> users = getLinkedUser(channel, true);
+                    if(!users.isEmpty()) {
+                            MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel), channel);
+                            return;
+                    }
+                } else {
+                    MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("not_streaming"))
+                            .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                            .replace("%channel%", channel), channel);
+                }
             }
 
             // Execute custom command
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.stop");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, TLA.config.getBoolean("commands.skip_offline_players")).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -108,7 +131,7 @@ public class StreamUtils {
 
             if (TLA.config.getBoolean("channelCommands.enabled")) {
                 List<String> stopCommands = TLA.config.getStringList("channelCommands." + channel + ".stop");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, TLA.config.getBoolean("channelCommands.skip_offline_players")).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : stopCommands) {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -141,7 +164,7 @@ public class StreamUtils {
         // Execute customPlayer command
         if (TLA.config.getBoolean("timedCommands.enabled")) {
             List<String> commands = TLA.config.getStringList("timedCommands.live");
-            getLinkedUser(channel).forEach(user -> {
+            getLinkedUser(channel, TLA.config.getBoolean("timedCommands.skip_offline_players")).forEach(user -> {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     for (String command : commands) {
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
@@ -169,16 +192,32 @@ public class StreamUtils {
             }
 
             if (!TLA.config.getBoolean("disable-streaming-message")) {
-                MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
-                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                .replace("%channel%", channel)
-                                .replace("%title%", streamTitle)
-                        , channel);
+                if (TLA.config.getBoolean("announce-only-if-streamer-on-server")) {
+                    // check if the streamer is online
+                    List<String> users = getLinkedUser(channel, false);
+                    boolean isStreamerOnline = plugin.getServer().getOnlinePlayers().stream()
+                            .anyMatch(player -> users.contains(player.getName().toLowerCase()));
+                    if (!isStreamerOnline) {
+                        enqueueStream(channel, streamId, streamGameName, streamTitle);
+                    } else {
+                        MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
+                                        .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                        .replace("%channel%", channel)
+                                        .replace("%title%", streamTitle)
+                                , channel);
+                    }
+                } else {
+                    MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", streamTitle)
+                            , channel);
+                }
             }
 
             if (TLA.config.getBoolean("commands.enabled")) {
                 List<String> commands = TLA.config.getStringList("commands.start");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, TLA.config.getBoolean("commands.skip_offline_players")).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : commands) {
                             String finalCommand = command
@@ -194,7 +233,7 @@ public class StreamUtils {
 
             if (TLA.config.getBoolean("channelCommands.enabled")) {
                 List<String> startCommands = TLA.config.getStringList("channelCommands." + channel + ".start");
-                getLinkedUser(channel).forEach(user -> {
+                getLinkedUser(channel, TLA.config.getBoolean("channelCommands.skip_offline_players")).forEach(user -> {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (String command : startCommands) {
                             String finalCommand = command
@@ -210,7 +249,7 @@ public class StreamUtils {
         }
     }
 
-    private static List<String> getLinkedUser(String channel) {
+    private static List<String> getLinkedUser(String channel, boolean skipOfflinePlayers) {
         Section linkedUsersSection = TLA.config.getSection("linked_users");
         List<String> linkedUsers = new ArrayList<>();
         String lowerCaseChannel = channel.toLowerCase();
@@ -233,8 +272,6 @@ public class StreamUtils {
                 }
             }
 
-            // Check if we need to skip offline players
-            boolean skipOfflinePlayers = TLA.config.getBoolean("commands.skip_offline_players");
             if (skipOfflinePlayers) {
                 List<String> onlinePlayers = new ArrayList<>();
                 plugin.getServer().getOnlinePlayers().forEach(player -> {
@@ -248,5 +285,15 @@ public class StreamUtils {
             return linkedUsers;
         }
         return new ArrayList<>();
+    }
+
+    private static void enqueueStream(String channel, String streamId, String streamGameName, String streamTitle) {
+        if (!streamQueue.containsKey(channel)) {
+            streamQueue.put(channel, new StreamData(streamId, streamGameName, streamTitle));
+        }
+    }
+
+    public static void dequeueStream(String channel) {
+        streamQueue.remove(channel);
     }
 }
