@@ -8,7 +8,7 @@ Twitch Live Announcer (formerly Twitch Live Notifier for Spigot) keeps your Mine
 
 - Java 11 or newer
 - Spigot/Paper (or compatible) server implementation
-- [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) *(optional, required for placeholders)*
+- [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) *(required for placeholders)*
 - Twitch application credentials (client ID and secret)
 
 ## Key Features
