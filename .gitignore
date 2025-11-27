@@ -1,6 +1,8 @@
 # User-specific stuff
 .idea/
 
+build.sh
+
 *.iml
 *.ipr
 *.iws
