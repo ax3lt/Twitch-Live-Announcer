@@ -33,14 +33,14 @@ public final class StreamCommandHandler implements CommandExecutor {
     public StreamCommandHandler(TwitchLiveAnnouncerPlugin plugin) {
         this.reloadCommand = new ReloadCommand(plugin);
         this.forceCheckCommand = new ForceCheckCommand(plugin);
-        this.listStatusCommand = new ListStatusCommand(plugin);
+        this.listStatusCommand = new ListStatusCommand();
         this.addLinkCommand = new AddLinkCommand(plugin);
         this.clearLinkCommand = new ClearLinkCommand(plugin);
         this.removeLinkCommand = new RemoveLinkCommand(plugin);
-        this.listLinkCommand = new ListLinkCommand(plugin);
+        this.listLinkCommand = new ListLinkCommand();
         this.addChannelCommand = new AddChannelCommand(plugin);
         this.removeChannelCommand = new RemoveChannelCommand(plugin);
-        this.listChannelCommand = new ListChannelCommand(plugin);
+        this.listChannelCommand = new ListChannelCommand();
     }
 
     @Override
