@@ -39,14 +39,27 @@ jobs:
               namespace = ''
               if root.tag.startswith('{'):
                   namespace = root.tag.split('}', 1)[0].strip('{')
-              def find(path: str):
-                  if namespace:
-                      return root.find(path, {'m': namespace})
-                  return root.find(path.replace('m:', ''))
-              node = find('m:version') or find('m:parent/m:version')
-              if node is None or not (value := node.text.strip()):
+              
+              # Try to find version element
+              if namespace:
+                  node = root.find(f'{{{namespace}}}version')
+                  if node is None:
+                      parent = root.find(f'{{{namespace}}}parent')
+                      if parent is not None:
+                          node = parent.find(f'{{{namespace}}}version')
+              else:
+                  node = root.find('version')
+                  if node is None:
+                      parent = root.find('parent')
+                      if parent is not None:
+                          node = parent.find('version')
+              
+              if node is None:
                   raise SystemExit('Unable to find <version> in pom.xml')
-              return value
+              value = node.text
+              if value is None or not value.strip():
+                  raise SystemExit('Unable to find <version> in pom.xml')
+              return value.strip()
           
           
           def version_from_ref(ref: str) -> str | None:
