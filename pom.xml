@@ -5,7 +5,7 @@
 
     <groupId>it.ax3lt</groupId>
     <artifactId>TwitchLiveAnnouncer</artifactId>
-    <version>1.9.7</version>
+    <version>1.9.9</version>
     <packaging>jar</packaging>
 
     <name>TwitchLiveAnnouncer</name>
@@ -31,18 +31,24 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.3</version>
+            <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.17.0</version>
+            <version>4.25.0</version>
         </dependency>
         <dependency>
             <groupId>dev.dejvokep</groupId>
             <artifactId>boosted-yaml</artifactId>
             <version>1.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -116,6 +122,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
             </plugin>
         </plugins>
     </build>

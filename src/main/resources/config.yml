@@ -1,5 +1,5 @@
 # !!! DO NOT TOUCH THIS !!!
-config-version: 4
+config-version: 5
 
 prefix: '&8[&cTwitch&8]'
 reload_time: 60
@@ -75,6 +75,7 @@ commands:
 # Here you can specify custom commands for each channel, the commands will be executed for each linked player
 channelCommands:
   enabled: false
+  skip_offline_players: true
   "channel1":
     start:
       - 'tellraw @a {"text":"%channel% of %player% is now streaming","color":"gray"}'
@@ -89,6 +90,7 @@ channelCommands:
 # Placeholders: %player% - linked player name, %channel% - channel name, %title% - stream title
 timedCommands:
  enabled: false
+ skip_offline_players: true
  live:
    - 'give %player% minecraft:diamond 1'
 
@@ -117,5 +119,8 @@ bungee:
 
 disable-streaming-message: false
 disable-not-streaming-message: false
+
+# This will make the "now_streaming" messages appear only when the minecraft player that is connected to a channel join the server, not everytime the channel starts streaming even if the player is not currently in the server
+announce-only-if-streamer-on-server: false
 
 bstats-enabled: true

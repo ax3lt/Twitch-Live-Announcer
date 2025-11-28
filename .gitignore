@@ -1,6 +1,8 @@
 # User-specific stuff
 .idea/
 
+build.sh
+
 *.iml
 *.ipr
 *.iws
@@ -111,3 +113,13 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+target
+
+.gradle
+# Gradle files
+.gradle/
+# Gradle build cache
+.gradle/caches/
+# Gradle wrapper jar
+.gradle/wrapper/
