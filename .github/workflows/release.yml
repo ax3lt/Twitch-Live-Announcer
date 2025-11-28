@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Extract project version
+        id: version
+        run: |
+          echo "value=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> "$GITHUB_OUTPUT"
+
+      - name: Build shaded jar
+        run: mvn -B clean package
+
+      - name: Upload shaded jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TwitchLiveAnnouncer-${{ steps.version.outputs.value }}
+          path: target/TwitchLiveAnnouncer-${{ steps.version.outputs.value }}.jar
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: TwitchLiveAnnouncer ${{ steps.version.outputs.value }}
+          generate_release_notes: true
+          files: target/TwitchLiveAnnouncer-${{ steps.version.outputs.value }}.jar
+
