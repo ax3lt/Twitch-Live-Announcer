@@ -47,7 +47,7 @@ public final class TwitchApiClient {
 
         int responseCode = connection.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            throw new IOException("Failed to fetch user data: HTTP error code " + responseCode);
+            throw new IOException("Failed to fetch user data for " + twitchUser + ": HTTP error code " + responseCode);
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
@@ -69,7 +69,7 @@ public final class TwitchApiClient {
 
         int responseCode = connection.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            throw new IOException("Failed to fetch stream information: HTTP error code " + responseCode);
+            throw new IOException("Failed to fetch stream information for user ID " + userId + ": HTTP error code " + responseCode);
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
