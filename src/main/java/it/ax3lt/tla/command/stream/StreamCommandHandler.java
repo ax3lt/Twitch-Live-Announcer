@@ -69,7 +69,7 @@ public final class StreamCommandHandler implements CommandExecutor {
             }
         }
 
-        if (args.length >= 2 && args[0].equalsIgnoreCase("link")) {
+        if (args[0].equalsIgnoreCase("link")) {
             String sub = args[1].toLowerCase();
             if (sub.equals("add")) {
                 return addLinkCommand.onCommand(sender, command, label, args);
@@ -85,7 +85,7 @@ public final class StreamCommandHandler implements CommandExecutor {
             }
         }
 
-        if (args.length >= 2 && args[0].equalsIgnoreCase("channels")) {
+        if (args[0].equalsIgnoreCase("channels")) {
             String sub = args[1].toLowerCase();
             if (sub.equals("add")) {
                 return addChannelCommand.onCommand(sender, command, label, args);
