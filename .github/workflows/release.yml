@@ -1,0 +1,148 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - pom.xml
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine release trigger
+        id: release-info
+        env:
+          GITHUB_BEFORE: ${{ github.event.before }}
+        run: |
+          python3 <<'PY'
+          import os
+          import pathlib
+          import subprocess
+          import xml.etree.ElementTree as ET
+          
+          def extract_version(text: str) -> str:
+              root = ET.fromstring(text)
+              namespace = ''
+              if root.tag.startswith('{'):
+                  namespace = root.tag.split('}', 1)[0].strip('{')
+              
+              # Try to find version element
+              if namespace:
+                  node = root.find(f'{{{namespace}}}version')
+                  if node is None:
+                      parent = root.find(f'{{{namespace}}}parent')
+                      if parent is not None:
+                          node = parent.find(f'{{{namespace}}}version')
+              else:
+                  node = root.find('version')
+                  if node is None:
+                      parent = root.find('parent')
+                      if parent is not None:
+                          node = parent.find('version')
+              
+              if node is None:
+                  raise SystemExit('Unable to find <version> in pom.xml')
+              value = node.text
+              if value is None or not value.strip():
+                  raise SystemExit('Unable to find <version> in pom.xml')
+              return value.strip()
+          
+          
+          def version_from_ref(ref: str) -> str | None:
+              if not ref:
+                  return None
+              try:
+                  content = subprocess.check_output(['git', 'show', f'{ref}:pom.xml'], text=True, stderr=subprocess.DEVNULL)
+                  return extract_version(content)
+              except subprocess.CalledProcessError:
+                  return None
+          
+          current_version = extract_version(pathlib.Path('pom.xml').read_text())
+          previous_version = None
+          before_sha = os.environ.get('GITHUB_BEFORE', '').strip()
+          if before_sha and set(before_sha) != {'0'}:
+              previous_version = version_from_ref(before_sha)
+          if previous_version is None:
+              previous_version = version_from_ref('HEAD^')
+          
+          ref_type = os.environ.get('GITHUB_REF_TYPE', '')
+          ref_name = os.environ.get('GITHUB_REF_NAME', '')
+          should_release = True
+          tag_name = ''
+          if ref_type == 'tag':
+              tag_name = ref_name
+          elif previous_version is None:
+              tag_name = f'v{current_version}'
+          elif previous_version != current_version:
+              tag_name = f'v{current_version}'
+          else:
+              should_release = False
+          
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
+              fh.write(f"current={current_version}\n")
+              fh.write(f"should_release={'true' if should_release else 'false'}\n")
+              if should_release:
+                  fh.write(f"tag_name={tag_name}\n")
+          PY
+
+      - name: No release needed
+        if: steps.release-info.outputs.should_release != 'true'
+        run: echo 'pom.xml version unchanged. Skipping release.'
+
+      - name: Set up Temurin JDK 11
+        if: steps.release-info.outputs.should_release == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Build shaded jar
+        if: steps.release-info.outputs.should_release == 'true'
+        run: mvn -B clean package
+
+      - name: Create release tag
+        if: steps.release-info.outputs.should_release == 'true' && github.ref_type != 'tag'
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.release-info.outputs.tag_name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch --tags --force
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            echo "Tag ${TAG} already exists, skipping creation."
+          else
+            git tag -a "${TAG}" -m "Release ${{ steps.release-info.outputs.current }}"
+            git push origin "${TAG}"
+          fi
+
+      - name: Upload shaded jar artifact
+        if: steps.release-info.outputs.should_release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: TwitchLiveAnnouncer-${{ steps.release-info.outputs.current }}
+          path: target/TwitchLiveAnnouncer-${{ steps.release-info.outputs.current }}.jar
+
+      - name: Publish GitHub release
+        if: steps.release-info.outputs.should_release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release-info.outputs.tag_name }}
+          name: TwitchLiveAnnouncer ${{ steps.release-info.outputs.current }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          files: target/TwitchLiveAnnouncer-${{ steps.release-info.outputs.current }}.jar

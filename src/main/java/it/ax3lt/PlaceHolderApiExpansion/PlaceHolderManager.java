@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlaceHolderManager extends PlaceholderExpansion {
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
+    public String onRequest(OfflinePlayer player, @NotNull String params) {
 
         if (!TLA.config.getBoolean("placeholders.enabled"))
             return null;

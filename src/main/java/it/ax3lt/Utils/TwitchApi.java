@@ -46,7 +46,7 @@ public class TwitchApi {
 
         int responseCode = con.getResponseCode();
         if (responseCode != 200) {
-            throw new IOException("Failed to get user data: HTTP error code: " + responseCode);
+            throw new IOException("Failed to get user data for '" + twitchUser + "': HTTP error code: " + responseCode);
         }
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -75,7 +75,7 @@ public class TwitchApi {
 
         int responseCode = con.getResponseCode();
         if (responseCode != 200) {
-            throw new IOException("Failed to get stream information: HTTP error code: " + responseCode);
+            throw new IOException("Failed to get stream information for user ID '" + userId + "': HTTP error code: " + responseCode);
         }
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -87,6 +87,5 @@ public class TwitchApi {
         in.close();
 
         return new Gson().fromJson(response.toString(), JsonObject.class);
-//        return JsonParser.parseString(response.toString()).getAsJsonObject();
     }
 }

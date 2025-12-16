@@ -24,7 +24,7 @@ public class StreamerJoinEvent implements Listener {
         Player p = event.getPlayer();
         UUID uuid = p.getUniqueId();
 
-        List<String> channels = TLA.config.getStringList("linked_users." + uuid.toString());
+        List<String> channels = TLA.config.getStringList("linked_users." + uuid);
         if (channels != null && !channels.isEmpty()) {
             for (String channel : channels) {
                 if(StreamUtils.getStreamQueue().containsKey(channel)) {
