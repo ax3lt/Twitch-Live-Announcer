@@ -8,6 +8,7 @@ import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import it.ax3lt.Bstats.Metrics;
 import it.ax3lt.BungeeManager.MessageListener;
+import it.ax3lt.Classes.StreamData;
 import it.ax3lt.Commands.Stream.StreamCommandHandler;
 import it.ax3lt.PlaceHolderApiExpansion.PlaceHolderManager;
 import it.ax3lt.TabComplete.StreamCommandTabHandler;
@@ -23,7 +24,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 public final class TLA extends JavaPlugin {
@@ -55,6 +59,7 @@ public final class TLA extends JavaPlugin {
 
         startTwitchCheckerRunnable();
         startMultiStreamRunnable();
+        startTimeCommandsRunnable();
     }
 
     private void registerEventListeners() {
@@ -198,6 +203,35 @@ public final class TLA extends JavaPlugin {
         }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("multipleStreamService.broadcastTime") * 20L);
     }
 
+    private void startTimeCommandsRunnable() {
+        if(!config.getBoolean("timedCommands.enabled"))
+            return;
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                List<String> commands = config.getStringList("timedCommands.live");
+                HashMap<String, StreamData> channels = StreamUtils.getStreams();
+
+                for (String channel : channels.keySet()){
+                    StreamUtils.getLinkedUser(channel, TLA.config.getBoolean("timedCommands.skip_offline_players")).forEach(user -> {
+                        for (String command : commands) {
+                            String finalCommand = command
+                                    .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+                                    .replace("%channel%", channel)
+                                    .replace("%title%", channels.get(channel).getTitle())
+                                    .replace("%player%", user);
+                            Bukkit.getScheduler().runTask(TLA.getInstance(), () ->
+                                    getServer().dispatchCommand(getServer().getConsoleSender(), finalCommand));
+                        }
+                    });
+                }
+
+            }
+        }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("timedCommands.repeat_time") * 20L);
+    }
+
+
     private void registerCommands() {
         Objects.requireNonNull(getCommand("stream")).setExecutor(new StreamCommandHandler()); // Register command executor for /stream command
         Objects.requireNonNull(getCommand("setchannel")).setExecutor(new it.ax3lt.Commands.SetAndClearChannel.SetChannelCommand()); // Register command executor for /setchannel command
@@ -232,5 +266,3 @@ public final class TLA extends JavaPlugin {
         return getPlugin(TLA.class);
     }
 }
-
-

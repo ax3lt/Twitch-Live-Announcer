@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 public class StreamUtils {
 
-    private static HashMap<String, String> streams = new HashMap<>();
+    private static HashMap<String, StreamData> streams = new HashMap<>();
     private static HashMap<String, StreamData> streamQueue = new HashMap<>();
     private static String client_id;
     private static String token;
 
-    public static HashMap<String, String> getStreams() {
+    public static HashMap<String, StreamData> getStreams() {
         return streams;
     }
 
@@ -76,7 +76,8 @@ public class StreamUtils {
                     String streamGameName = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("game_name").getAsString().toLowerCase();
                     String streamTitle = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("title").getAsString().toLowerCase();
                     String streamId = streamInfo.get("data").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
-                    doOnlineStream(channel, streamId, streamGameName, streamTitle);
+                    StreamData data = new StreamData(streamId, streamGameName, streamTitle);
+                    doOnlineStream(channel, data);
                 }
             }
         });
@@ -145,41 +146,41 @@ public class StreamUtils {
         }
     }
 
-    public static void doOnlineStream(String channel, String streamId, String streamGameName, String streamTitle) {
+    public static void doOnlineStream(String channel, StreamData data) {
         if (TLA.config.getBoolean("filter-stream-type.enabled") && TLA.config.getStringList("filter-stream-type.games")
                 .stream()
                 .map(String::toLowerCase)
-                .noneMatch(streamGameName::contains)) {
+                .noneMatch(data.getGameName()::contains)) {
             doOfflineStream(channel);
             return;
         }
         if (TLA.config.getBoolean("filter-stream-title.enabled") && TLA.config.getStringList("filter-stream-title.text")
                 .stream()
                 .map(String::toLowerCase)
-                .noneMatch(streamTitle::contains)) {
+                .noneMatch(data.getTitle()::contains)) {
             doOfflineStream(channel);
             return;
         }
 
-        // Execute customPlayer command
-        if (TLA.config.getBoolean("timedCommands.enabled")) {
-            List<String> commands = TLA.config.getStringList("timedCommands.live");
-            getLinkedUser(channel, TLA.config.getBoolean("timedCommands.skip_offline_players")).forEach(user -> {
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    for (String command : commands) {
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-                                .replace("%channel%", channel)
-                                .replace("%title%", streamTitle)
-                                .replace("%player%", user));
-                    }
-                });
-            });
-        }
+//        // Execute customPlayer command
+//        if (TLA.config.getBoolean("timedCommands.enabled")) {
+//            List<String> commands = TLA.config.getStringList("timedCommands.live");
+//            getLinkedUser(channel, TLA.config.getBoolean("timedCommands.skip_offline_players")).forEach(user -> {
+//                Bukkit.getScheduler().runTask(plugin, () -> {
+//                    for (String command : commands) {
+//                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
+//                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
+//                                .replace("%channel%", channel)
+//                                .replace("%title%", data.getTitle())
+//                                .replace("%player%", user));
+//                    }
+//                });
+//            });
+//        }
 
         // Prima era offline, ora è online -> aggiungo il canale alla lista
-        if (!streams.containsKey(channel) || !streams.get(channel).equals(streamId)) {
-            streams.put(channel, streamId);
+        if (!streams.containsKey(channel) || !streams.get(channel).equals(data.getStreamId())) {
+            streams.put(channel, data);
 
             // Add channel to database
             if (MysqlConnection.enabled) {
@@ -198,19 +199,19 @@ public class StreamUtils {
                     boolean isStreamerOnline = plugin.getServer().getOnlinePlayers().stream()
                             .anyMatch(player -> users.contains(player.getName().toLowerCase()));
                     if (!isStreamerOnline) {
-                        enqueueStream(channel, streamId, streamGameName, streamTitle);
+                        enqueueStream(channel, data);
                     } else {
                         MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
                                         .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                         .replace("%channel%", channel)
-                                        .replace("%title%", streamTitle)
+                                        .replace("%title%", data.getTitle())
                                 , channel);
                     }
                 } else {
                     MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("now_streaming"))
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
-                                    .replace("%title%", streamTitle)
+                                    .replace("%title%", data.getTitle())
                             , channel);
                 }
             }
@@ -223,7 +224,7 @@ public class StreamUtils {
                             String finalCommand = command
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
-                                    .replace("%title%", streamTitle)
+                                    .replace("%title%", data.getTitle())
                                     .replace("%player%", user);
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), finalCommand);
                         }
@@ -239,7 +240,7 @@ public class StreamUtils {
                             String finalCommand = command
                                     .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
                                     .replace("%channel%", channel)
-                                    .replace("%title%", streamTitle)
+                                    .replace("%title%", data.getTitle())
                                     .replace("%player%", user);
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), finalCommand);
                         }
@@ -249,7 +250,7 @@ public class StreamUtils {
         }
     }
 
-    private static List<String> getLinkedUser(String channel, boolean skipOfflinePlayers) {
+    public static List<String> getLinkedUser(String channel, boolean skipOfflinePlayers) {
         Section linkedUsersSection = TLA.config.getSection("linked_users");
         List<String> linkedUsers = new ArrayList<>();
         String lowerCaseChannel = channel.toLowerCase();
@@ -287,9 +288,9 @@ public class StreamUtils {
         return new ArrayList<>();
     }
 
-    private static void enqueueStream(String channel, String streamId, String streamGameName, String streamTitle) {
+    private static void enqueueStream(String channel, StreamData data) {
         if (!streamQueue.containsKey(channel)) {
-            streamQueue.put(channel, new StreamData(streamId, streamGameName, streamTitle));
+            streamQueue.put(channel, data);
         }
     }
 

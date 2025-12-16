@@ -1,5 +1,5 @@
 # !!! DO NOT TOUCH THIS !!!
-config-version: 5
+config-version: 6
 
 prefix: '&8[&cTwitch&8]'
 reload_time: 60
@@ -17,9 +17,6 @@ backupConfig:
   when: 'startup'
   # The time when the backup will be created (only for 'daily' option)
   time: '00:00'
-
-# If you want to remove channels that are invalid from the configuration to not show the message in console (not found on Twitch)
-remove_invalid_channels: true
 
 # The list of channels you want to check
 channels:
@@ -86,10 +83,11 @@ channelCommands:
 
 # Also here you can use %player% to replace with the linked player name, and %channel% to replace with the channel name
 # The command will be executed for each linked player, so like the commands above, if you have 3 linked players to a channel it will execute 3 times
-# This will be executed every reload_time seconds, and ONLY to the linked players that are ONLINE
+# This will be executed every repeat_time seconds, and ONLY to the linked players that are ONLINE (if set so)
 # Placeholders: %player% - linked player name, %channel% - channel name, %title% - stream title
 timedCommands:
  enabled: false
+ repeat_time: 10 # In seconds
  skip_offline_players: true
  live:
    - 'give %player% minecraft:diamond 1'
