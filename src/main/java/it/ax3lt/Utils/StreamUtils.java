@@ -68,7 +68,8 @@ public class StreamUtils {
                 }
 
                 // Check stream status
-                if (streamInfo.get("data").getAsJsonArray().isEmpty()) {
+                // MUST use .size() == 0 to check if the array is empty, if use .isEmpty() paper 1.8 will throw an error
+                if (streamInfo.get("data").getAsJsonArray().size() == 0) {
                     // Stream is offline
                     doOfflineStream(channel);
                 } else {
@@ -162,24 +163,8 @@ public class StreamUtils {
             return;
         }
 
-//        // Execute customPlayer command
-//        if (TLA.config.getBoolean("timedCommands.enabled")) {
-//            List<String> commands = TLA.config.getStringList("timedCommands.live");
-//            getLinkedUser(channel, TLA.config.getBoolean("timedCommands.skip_offline_players")).forEach(user -> {
-//                Bukkit.getScheduler().runTask(plugin, () -> {
-//                    for (String command : commands) {
-//                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command
-//                                .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix")))
-//                                .replace("%channel%", channel)
-//                                .replace("%title%", data.getTitle())
-//                                .replace("%player%", user));
-//                    }
-//                });
-//            });
-//        }
-
         // Prima era offline, ora è online -> aggiungo il canale alla lista
-        if (!streams.containsKey(channel) || !streams.get(channel).equals(data.getStreamId())) {
+        if (!streams.containsKey(channel) || !streams.get(channel).getStreamId().equals(data.getStreamId())) {
             streams.put(channel, data);
 
             // Add channel to database
