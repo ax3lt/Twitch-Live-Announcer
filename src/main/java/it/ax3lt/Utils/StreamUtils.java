@@ -18,6 +18,7 @@ public class StreamUtils {
     private static HashMap<String, StreamData> streams = new HashMap<>();
     private static HashMap<String, StreamData> streamQueue = new HashMap<>();
     private static String client_id;
+    private static String client_secret;
     private static String token;
 
     public static HashMap<String, StreamData> getStreams() {
@@ -31,10 +32,18 @@ public class StreamUtils {
     static TLA plugin;
 
     public static void configureParameters() throws IOException {
-        client_id = ConfigUtils.getConfigString("client_id");
-        String client_secret = ConfigUtils.getConfigString("client_secret");
-        token = TwitchApi.getToken(client_id, client_secret);
+        String newClientId = ConfigUtils.getConfigString("client_id");
+        String newClientSecret = ConfigUtils.getConfigString("client_secret");
+        // Only store credentials once the token request succeeds, so a failed reload is retried next time
+        token = TwitchApi.getToken(newClientId, newClientSecret);
+        client_id = newClientId;
+        client_secret = newClientSecret;
         plugin = TLA.getInstance();
+    }
+
+    public static boolean credentialsChanged() {
+        return !Objects.equals(client_id, ConfigUtils.getConfigString("client_id"))
+                || !Objects.equals(client_secret, ConfigUtils.getConfigString("client_secret"));
     }
 
     public static void refresh() throws IOException {

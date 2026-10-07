@@ -21,6 +21,7 @@ import it.ax3lt.Utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,7 @@ public final class TLA extends JavaPlugin {
     public static YamlDocument config;
     public static YamlDocument messages;
     Metrics m;
+    private BukkitTask checkerTask, multiStreamTask, timedCommandsTask;
 
     @Override
     public void onEnable() {
@@ -173,8 +175,17 @@ public final class TLA extends JavaPlugin {
         return true;
     }
 
+    public void restartTasks() {
+        for (BukkitTask t : new BukkitTask[]{checkerTask, multiStreamTask, timedCommandsTask})
+            if (t != null) t.cancel();
+        timedCommandsTask = null;
+        startTwitchCheckerRunnable();
+        startMultiStreamRunnable();
+        startTimeCommandsRunnable();
+    }
+
     private void startTwitchCheckerRunnable() {
-        new BukkitRunnable() {
+        checkerTask = new BukkitRunnable() {
             @Override
             public void run() {
                 try {
@@ -186,28 +197,30 @@ public final class TLA extends JavaPlugin {
                     );
                 }
             }
-        }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("reload_time") * 20L);
+        }.runTaskTimerAsynchronously(this, 0L, Math.max(1L, config.getLong("reload_time")) * 20L);
     }
 
     private void startMultiStreamRunnable() {
-        new BukkitRunnable() {
+        long period = Math.max(1L, config.getLong("multipleStreamService.broadcastTime")) * 20L;
+        multiStreamTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (getConfig().getBoolean("multipleStreamService.enabled")) {
+                if (config.getBoolean("multipleStreamService.enabled")) {
                     if (!StreamUtils.getStreams().isEmpty()) {
                         MessageUtils.broadcastMessage(Objects.requireNonNull(MessagesConfigUtils.getString("multi-stream"))
                                 .replace("%prefix%", Objects.requireNonNull(ConfigUtils.getConfigString("prefix"))), "");
                     }
                 }
             }
-        }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("multipleStreamService.broadcastTime") * 20L);
+        }.runTaskTimerAsynchronously(this, period, period);
     }
 
     private void startTimeCommandsRunnable() {
         if(!config.getBoolean("timedCommands.enabled"))
             return;
 
-        new BukkitRunnable(){
+        long period = Math.max(1L, config.getLong("timedCommands.repeat_time")) * 20L;
+        timedCommandsTask = new BukkitRunnable(){
             @Override
             public void run() {
                 List<String> commands = config.getStringList("timedCommands.live");
@@ -228,7 +241,7 @@ public final class TLA extends JavaPlugin {
                 }
 
             }
-        }.runTaskTimerAsynchronously(this, 0L, getConfig().getLong("timedCommands.repeat_time") * 20L);
+        }.runTaskTimerAsynchronously(this, period, period);
     }
 
 

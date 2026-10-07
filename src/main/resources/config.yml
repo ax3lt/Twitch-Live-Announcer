@@ -85,6 +85,7 @@ channelCommands:
 # The command will be executed for each linked player, so like the commands above, if you have 3 linked players to a channel it will execute 3 times
 # This will be executed every repeat_time seconds, and ONLY to the linked players that are ONLINE (if set so)
 # Placeholders: %player% - linked player name, %channel% - channel name, %title% - stream title
+# Changes apply with /stream reload (no restart needed), the repeat_time countdown starts again after every reload
 timedCommands:
  enabled: false
  repeat_time: 10 # In seconds
